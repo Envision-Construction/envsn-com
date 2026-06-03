@@ -69,7 +69,9 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Legacy utility classes (mirror env-* from the Divi child theme) */
+/* ============================================================
+ * Legacy utility classes (mirror env-* from the Divi child theme)
+ * ============================================================ */
 .env-green {
   color: var(--color-env-green);
 }
@@ -82,4 +84,72 @@ body {
   max-width: 1280px;
   margin-inline: auto;
   padding-inline: 1.5rem;
+}
+
+/* ============================================================
+ * Hero: BUILD WITH INTELLIGENCE band — fades in on initial load
+ * ============================================================ */
+.env-tagline-band {
+  background: var(--color-env-dark-1);
+  color: #fff;
+  text-align: center;
+  padding: 1.5rem 1rem;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: env-fade-in 1.2s ease-out 0.2s forwards;
+}
+
+@keyframes env-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+ * env-animated-title — matches the legacy Divi module
+ * ============================================================ */
+.env-animated-title {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  justify-content: center;
+  padding-inline: 1.5rem;
+  max-width: 1280px;
+  margin-inline: auto;
+}
+
+.env-at-title {
+  font-size: 48px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-env-dark-1);
+}
+
+.env-at-title-line-2 {
+  color: var(--color-env-gray);
+  transition: color 2s ease;
+}
+
+/* When the AnimatedTitle component detects scroll, it adds env--is-scrolled
+ * to the container, which flips line 2's color from gray to green. */
+.env-animated-title.env--is-scrolled .env-at-title-line-2 {
+  color: var(--color-env-green);
+}
+
+@media (max-width: 767px) {
+  .env-animated-title {
+    height: auto;
+    padding-block: 50px;
+  }
+  .env-at-title {
+    font-size: 38px;
+  }
 }
