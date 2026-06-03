@@ -36,7 +36,13 @@ const FALLBACK_TILES: CapabilityTile[] = [
 
 const DETAILS: Record<
   string,
-  { title: string; items: string[]; ctaHref: string; ctaLabel: string }
+  {
+    title: string
+    items: string[]
+    ctaHref: string
+    ctaLabel: string
+    videoUrl?: string
+  }
 > = {
   lidar: {
     title: '3D LiDAR Mapping',
@@ -51,6 +57,7 @@ const DETAILS: Record<
     ],
     ctaHref: '/pre-construction',
     ctaLabel: 'Pre Construction Services',
+    videoUrl: '/videos/3D-Site-Mapping_01.mp4',
   },
 }
 
@@ -145,9 +152,19 @@ export function CapabilitiesSection({
                 </a>
               </div>
               <div className="flex items-center justify-center">
-                <div className="w-full aspect-video bg-neutral-800 rounded flex items-center justify-center text-neutral-500 text-sm">
-                  Demo image / video placeholder
-                </div>
+                {detail.videoUrl ? (
+                  <video
+                    src={detail.videoUrl}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    controls
+                    className="w-full aspect-video object-cover rounded"
+                  />
+                ) : (
+                  <div className="w-full aspect-video bg-neutral-800 rounded" />
+                )}
               </div>
             </div>
           </div>
