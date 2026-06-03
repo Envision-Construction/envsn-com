@@ -72,18 +72,42 @@ body {
 
 .env-section-body { margin-top: 16px; }
 
+/* Portable Text — paragraphs get vertical rhythm so multi-paragraph
+ * Sanity bodies render as visually separated blocks. */
+.env-section-body p + p,
+.env-section-body div + div > p:first-child {
+  margin-top: 1em;
+}
+
 /* Image+text split — text on left, image on right, top-aligned so the
- * heading-to-body distance feels consistent regardless of image height. */
+ * heading-to-body distance feels consistent regardless of image height.
+ * Image column ~15% larger than the previous 1.6fr ratio; gap widened. */
 .env-section-split {
   display: grid;
-  gap: 32px;
+  gap: 56px;
   align-items: start;
 }
 
 @media (min-width: 768px) {
   .env-section-split {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.9fr);
   }
+}
+
+/* ============================================================
+ * Scroll-fade — used by <ScrollFade> wrapper. Element starts faded
+ * + offset; once IntersectionObserver flips env-in-view, transitions in.
+ * ============================================================ */
+.env-fade-in-section {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 800ms ease-out, transform 800ms ease-out;
+  will-change: opacity, transform;
+}
+
+.env-fade-in-section.env-in-view {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ============================================================
@@ -360,7 +384,11 @@ body {
   padding-inline: 1.5rem;
 }
 
-.env-quote-emphasis { color: var(--color-env-green); }
+.env-quote-emphasis {
+  color: var(--color-env-green);
+  display: block;
+  margin-top: 4px;
+}
 
 .env-quote-author {
   text-align: right;

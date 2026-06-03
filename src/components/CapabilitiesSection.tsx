@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type Tile = {
   key: string
@@ -51,7 +51,20 @@ const DETAILS: Record<
 
 export function CapabilitiesSection() {
   const [openDetail, setOpenDetail] = useState<string | null>(null)
-  const detail = openDetail ? DETAILS[openDetail] : null
+  // Keep the content rendered briefly after openDetail goes null so the
+  // close animation (max-height + opacity) can run before unmounting.
+  const [renderedDetail, setRenderedDetail] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (openDetail) {
+      setRenderedDetail(openDetail)
+      return
+    }
+    const t = setTimeout(() => setRenderedDetail(null), 550)
+    return () => clearTimeout(t)
+  }, [openDetail])
+
+  const detail = renderedDetail ? DETAILS[renderedDetail] : null
 
   return (
     <>

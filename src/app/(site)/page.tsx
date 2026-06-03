@@ -4,6 +4,7 @@ import { PortableText, type PortableTextBlock } from 'next-sanity'
 import { CapabilitiesSection } from '@/components/CapabilitiesSection'
 import { ContactForm } from '@/components/ContactForm'
 import { ExecutiveTeam } from '@/components/ExecutiveTeam'
+import { ScrollFade } from '@/components/ScrollFade'
 import { TechnologyCarousel } from '@/components/TechnologyCarousel'
 import { client } from '@/sanity/client'
 import { homePageQuery } from '@/sanity/queries'
@@ -122,37 +123,43 @@ export default async function HomePage() {
       </section>
 
       {/* ============= ABOUT (image+text split) ============= */}
-      <CultureSection
-        id="culture"
-        eyebrow={page?.aboutEyebrow ?? 'Culture'}
-        heading={page?.aboutHeading ?? 'About Us'}
-        image={page?.aboutImageUrl}
-        body={page?.aboutBody}
-      />
+      <ScrollFade>
+        <CultureSection
+          id="culture"
+          eyebrow={page?.aboutEyebrow ?? 'Culture'}
+          heading={page?.aboutHeading ?? 'About Us'}
+          image={page?.aboutImageUrl}
+          body={page?.aboutBody}
+        />
+      </ScrollFade>
 
       {/* ============= DIVERSITY (image+text split) ============= */}
-      <CultureSection
-        eyebrow={page?.diversityEyebrow ?? 'Culture'}
-        heading={page?.diversityHeading ?? 'Diversity'}
-        image={page?.diversityImageUrl ?? '/uploads/2024/05/culture-diversity-f.png'}
-        body={page?.diversityBody}
-      />
+      <ScrollFade>
+        <CultureSection
+          eyebrow={page?.diversityEyebrow ?? 'Culture'}
+          heading={page?.diversityHeading ?? 'Diversity'}
+          image={page?.diversityImageUrl ?? '/uploads/2024/05/culture-diversity-f.png'}
+          body={page?.diversityBody}
+        />
+      </ScrollFade>
 
       {/* ============= TECHNOLOGY (text left, carousel right — matches Diversity/About layout) ============= */}
-      <section className="bg-white py-20 md:py-28">
-        <div className="env-container">
-          <div className="env-section-head">
-            <p className="env-eyebrow">{page?.technologyEyebrow ?? 'Culture'}</p>
-            <h2>{page?.technologyHeading ?? 'Technology'}</h2>
-          </div>
-          <div className="env-section-body env-section-split">
-            <div className="text-base leading-relaxed text-neutral-700">
-              <PortableTextOrFallback value={page?.technologyBody} fallback="" />
+      <ScrollFade>
+        <section className="bg-white py-20 md:py-28">
+          <div className="env-container">
+            <div className="env-section-head">
+              <p className="env-eyebrow">{page?.technologyEyebrow ?? 'Culture'}</p>
+              <h2>{page?.technologyHeading ?? 'Technology'}</h2>
             </div>
-            <TechnologyCarousel features={technologyFeatures} />
+            <div className="env-section-body env-section-split">
+              <div className="text-base leading-relaxed text-neutral-700">
+                <PortableTextOrFallback value={page?.technologyBody} fallback="" />
+              </div>
+              <TechnologyCarousel features={technologyFeatures} />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </ScrollFade>
 
       {/* ============= TESTIMONIAL — Ryan Pastor ============= */}
       <section className="env-quote-section">
