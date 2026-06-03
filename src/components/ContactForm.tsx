@@ -5,14 +5,12 @@ import { useActionState, useEffect, useRef } from 'react'
 import { submitContact, type ContactState } from '@/app/actions/contact'
 
 /**
- * Contact form component.
- * Wraps the `submitContact` server action with Cloudflare Turnstile +
- * honeypot + accessible field rendering. Field set matches the legacy site:
- * Name, Email, Phone (optional), Message.
+ * Contact form — matches the legacy field set:
+ *   First Name · Last Name · Phone · Email · Company · How can we help you?
  *
- * Turnstile widget loads only when NEXT_PUBLIC_TURNSTILE_SITE_KEY is set;
- * if missing, the form still renders but submissions will fail server-side
- * with a clear "not configured" message.
+ * Honeypot field + Cloudflare Turnstile + server-side Zod validation
+ * provide bot defense. Privacy disclosures + reCAPTCHA notice rendered
+ * below the submit button.
  */
 
 const initialState: ContactState = { status: 'idle' }
@@ -34,7 +32,6 @@ export function ContactForm() {
   const formRef = useRef<HTMLFormElement>(null)
   const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
 
-  // Reset Turnstile widget after each submission attempt so a new token is issued
   useEffect(() => {
     if (state.status !== 'idle' && typeof window !== 'undefined' && window.turnstile) {
       window.turnstile.reset()
@@ -51,7 +48,7 @@ export function ContactForm() {
     <form
       ref={formRef}
       action={formAction}
-      className="w-full max-w-xl mx-auto space-y-4"
+      className="w-full max-w-2xl space-y-4"
       noValidate
     >
       {/* Honeypot — hidden from humans, bots fill it */}
@@ -62,31 +59,51 @@ export function ContactForm() {
         </label>
       </div>
 
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field
+          label="First Name"
+          name="firstName"
+          autoComplete="given-name"
+          required
+          error={fieldError('firstName')}
+        />
+        <Field
+          label="Last Name"
+          name="lastName"
+          autoComplete="family-name"
+          required
+          error={fieldError('lastName')}
+        />
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field
+          label="Phone"
+          name="phone"
+          type="tel"
+          autoComplete="tel"
+          error={fieldError('phone')}
+        />
+        <Field
+          label="Email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          required
+          error={fieldError('email')}
+        />
+      </div>
+
       <Field
-        label="Name"
-        name="name"
-        autoComplete="name"
-        required
-        error={fieldError('name')}
+        label="Company"
+        name="company"
+        autoComplete="organization"
+        error={fieldError('company')}
       />
-      <Field
-        label="Email"
-        name="email"
-        type="email"
-        autoComplete="email"
-        required
-        error={fieldError('email')}
-      />
-      <Field
-        label="Phone (optional)"
-        name="phone"
-        type="tel"
-        autoComplete="tel"
-        error={fieldError('phone')}
-      />
+
       <div>
         <label htmlFor="message" className="block text-xs uppercase tracking-widest text-neutral-700">
-          Message *
+          How can we help you? *
         </label>
         <textarea
           id="message"
@@ -138,6 +155,46 @@ export function ContactForm() {
           {state.message}
         </p>
       )}
+
+      <div className="pt-4 space-y-3 text-xs leading-relaxed text-neutral-500">
+        <p>
+          Envision needs the contact information you provide to us to contact you
+          about our products and services. You may unsubscribe from these
+          communications at any time. For information on how to unsubscribe, as
+          well as our privacy practices and commitment to protecting your
+          privacy, please review our{' '}
+          <a href="/privacy" className="underline hover:text-env-green">
+            Privacy Policy
+          </a>
+          .
+        </p>
+        <p>
+          By clicking the box, you consent to allow Envision to store and process
+          the personal information submitted above to provide you the content
+          requested.
+        </p>
+        <p>
+          This site is protected by reCAPTCHA. The Google{' '}
+          <a
+            href="https://policies.google.com/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-env-green"
+          >
+            Privacy Policy
+          </a>{' '}
+          and{' '}
+          <a
+            href="https://policies.google.com/terms"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-env-green"
+          >
+            Terms of Service
+          </a>{' '}
+          apply.
+        </p>
+      </div>
     </form>
   )
 }

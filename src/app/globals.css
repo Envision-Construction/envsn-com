@@ -1,17 +1,8 @@
 @import "tailwindcss";
 
-/* ============================================================
- * envsn.com — design tokens
- * ----
- * Extracted from the legacy HSS-hosted Divi build to support
- * a 1:1 visual replica. Do not refresh to the 2026 Envision
- * Brand Standard here — that is a separate, future project.
- * ============================================================ */
-
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
 @theme inline {
-  /* Colors — env-* mirrors the legacy CSS class names */
   --color-env-green: #016d4a;
   --color-env-green-dark: #006e47;
   --color-env-green-mid: #007853;
@@ -25,14 +16,7 @@
   --color-env-bg-soft: #f7f7f7;
   --color-env-bg-light: #efefef;
 
-  /* Fonts */
   --font-sans: 'Montserrat', Helvetica, Arial, sans-serif;
-  --font-body: 'Open Sans', Arial, sans-serif;
-
-  /* Type scale — derived from legacy CSS audit (11px → 96px range) */
-  --text-display-xl: 96px;
-  --text-display-lg: 50px;
-  --text-display: 40px;
 }
 
 :root {
@@ -40,23 +24,20 @@
   --foreground: #231f20;
 }
 
-html {
+html, body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
   font-weight: 400;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
 /* ============================================================
- * Legacy utility classes (mirror env-* from the Divi child theme)
+ * Legacy utility classes
  * ============================================================ */
 .env-green { color: var(--color-env-green); }
 .env-bold { font-weight: 700; }
@@ -67,10 +48,9 @@ body {
 }
 
 /* ============================================================
- * Hero: BUILD WITH INTELLIGENCE — fills the env-animated-title slot
- * (replaces the legacy "Construction is broken / We're fixing it"
- *  animated title per direction 2026-06-03).
- * Large display type, fades in on initial page load.
+ * Hero — BUILD WITH INTELLIGENCE.
+ * Left-aligned, "BUILD WITH" white with black stroke, "INTELLIGENCE."
+ * solid black. Fades up on initial load.
  * ============================================================ */
 .env-hero-tagline {
   display: flex;
@@ -78,22 +58,30 @@ body {
   height: 80vh;
   min-height: 480px;
   justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding-inline: 1.5rem;
   background: #ffffff;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
 }
 
 .env-hero-tagline-text {
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: var(--color-env-dark-1);
-  /* Large display: clamp from mobile 48px to desktop 144px */
-  font-size: clamp(48px, 12vw, 144px);
+  font-weight: 800;
+  letter-spacing: 0.01em;
   line-height: 1.05;
+  font-size: clamp(48px, 12vw, 144px);
   opacity: 0;
   transform: translateY(12px);
   animation: env-fade-up 1.4s ease-out 0.3s forwards;
+}
+
+.env-hero-tagline-outline {
+  color: white;
+  -webkit-text-stroke: 2px var(--color-env-dark-1);
+  text-stroke: 2px var(--color-env-dark-1);
+}
+
+.env-hero-tagline-solid {
+  color: var(--color-env-dark-1);
 }
 
 @keyframes env-fade-up {
@@ -102,9 +90,8 @@ body {
 }
 
 /* ============================================================
- * env-tiles-tile — Capabilities photo tiles (3-across, 600px tall)
- * Mirrors the legacy module: white-text overlay on photo bg, hover
- * darkens the shadow and lifts the container slightly.
+ * Capabilities photo tiles (3-across, 600px tall) + expandable
+ * detail panel that opens below the row when a button is clicked.
  * ============================================================ */
 .env-tiles-row {
   display: grid;
@@ -120,77 +107,181 @@ body {
   position: relative;
   height: 600px;
   overflow: hidden;
-  display: block;
   color: white;
+  cursor: pointer;
 }
 
-.env-tiles-tile-container {
+.env-tiles-tile-bg {
+  position: absolute;
+  inset: 0;
   height: 100%;
-  position: relative;
-  top: 0;
-  transition: transform 400ms ease-out;
   width: 100%;
-}
-
-.env-tiles-tile:hover .env-tiles-tile-container {
-  transform: translateY(-12px);
-}
-
-.env-tiles-tile-background {
-  display: block;
-  height: 100%;
   object-fit: cover;
-  width: 100%;
+  transition: transform 600ms ease-out;
+}
+
+.env-tiles-tile:hover .env-tiles-tile-bg {
+  transform: scale(1.05);
 }
 
 .env-tiles-tile-shadow {
-  background-color: rgba(0, 0, 0, 0.2);
-  height: 100%;
-  left: 0;
   position: absolute;
-  top: 0;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
   transition: background-color 400ms ease-out;
-  width: 100%;
 }
 
 .env-tiles-tile:hover .env-tiles-tile-shadow {
-  background-color: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.75);
 }
 
-.env-tiles-tile-title {
+.env-tiles-tile-body {
   position: absolute;
-  bottom: 32px;
-  left: 32px;
-  right: 32px;
-  font-size: 28px;
-  font-weight: 300;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 40px;
   z-index: 2;
 }
 
-/* ============================================================
- * env-ts-member — Executive team grid (legacy-style cards with
- * offset gray background block behind the portrait, green role label)
- * ============================================================ */
-.env-ts-grid {
+.env-tiles-tile-title {
+  font-size: 36px;
+  font-weight: 300;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.env-tiles-tile-rule {
+  width: 90px;
+  height: 3px;
+  background: var(--color-env-green-light);
+  margin-bottom: 20px;
+}
+
+.env-tiles-tile-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #f5f5f5;
+  max-width: 90%;
+}
+
+.env-tiles-tile-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 24px;
+  padding: 10px 18px;
+  background: var(--color-env-green-light);
+  color: var(--color-env-dark-1);
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 999px;
+  align-self: flex-start;
+  transition: background-color 200ms;
+}
+
+.env-tiles-tile-button:hover {
+  background: var(--color-env-accent);
+}
+
+/* Detail panel that expands BELOW the tile row */
+.env-tiles-detail {
+  background: #000000;
+  color: white;
+  padding: 80px 0;
+}
+
+.env-tiles-detail-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  gap: 40px;
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 767px) {
+  .env-tiles-detail-grid { grid-template-columns: 1fr; }
+}
+
+.env-tiles-detail-title {
+  font-size: 32px;
+  font-weight: 300;
+  margin-bottom: 16px;
+}
+
+.env-tiles-detail-rule {
+  width: 100px;
+  height: 3px;
+  background: var(--color-env-green-light);
+  margin-bottom: 40px;
+}
+
+.env-tiles-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.env-tiles-detail-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.env-tiles-detail-list-item::before {
+  content: "";
+  flex-shrink: 0;
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-top: 4px;
+  background: var(--color-env-green-light);
+  border: 2px solid var(--color-env-green);
+  border-radius: 999px;
+}
+
+.env-tiles-detail-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 32px;
+  padding: 10px 18px;
+  background: var(--color-env-green-light);
+  color: var(--color-env-dark-1);
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 999px;
+}
+
+.env-tiles-detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: white;
+  font-weight: 600;
+}
+
+/* ============================================================
+ * Executive team carousel
+ * ============================================================ */
+.env-ts-track {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 32px;
 }
 
-@media (max-width: 1023px) {
-  .env-ts-grid { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 767px) {
+  .env-ts-track { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 639px) {
-  .env-ts-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-.env-ts-member {
-  text-align: left;
-}
+.env-ts-member { text-align: left; }
 
 .env-ts-member-image {
   position: relative;
+  padding-top: 12px;
+  padding-right: 12px;
 }
 
 .env-ts-member-image-bg {
@@ -224,16 +315,31 @@ body {
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  margin-top: 4px;
 }
 
-/* ============================================================
- * env-quote-author — Ryan Pastor testimonial section
- * Legacy uses right-aligned attribution on a light background.
- * ============================================================ */
-.env-quote-section {
-  background: #ffffff;
-  padding-block: 96px;
+.env-ts-arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--color-env-dark-1);
+  background: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-env-dark-1);
+  font-size: 18px;
+  transition: all 200ms;
 }
+
+.env-ts-arrow:hover { background: var(--color-env-dark-1); color: white; }
+.env-ts-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* ============================================================
+ * Ryan Pastor testimonial — right-aligned on light bg
+ * ============================================================ */
+.env-quote-section { background: #ffffff; padding-block: 96px; }
 
 .env-quote-body {
   font-size: clamp(28px, 4vw, 48px);
@@ -265,4 +371,11 @@ body {
   color: var(--color-env-dark-4);
   text-transform: uppercase;
   margin-top: 4px;
+}
+
+/* ============================================================
+ * Footer logo invert — render dark logo file as white
+ * ============================================================ */
+.env-footer-logo {
+  filter: invert(1) brightness(2);
 }

@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import { PortableText, type PortableTextBlock } from 'next-sanity'
 
+import { CapabilitiesSection } from '@/components/CapabilitiesSection'
 import { ContactForm } from '@/components/ContactForm'
+import { ExecutiveTeam } from '@/components/ExecutiveTeam'
 import { client } from '@/sanity/client'
 import { homePageQuery } from '@/sanity/queries'
 
@@ -65,12 +67,6 @@ async function getHomePage(): Promise<HomePage> {
   return client.fetch<HomePage>(homePageQuery).catch(() => null)
 }
 
-/* ============================================================
- * Fallback content — used when the Sanity document is empty.
- * Mirrors the section structure of the legacy site so a visitor
- * sees the same layout even before Sanity is seeded.
- * ============================================================ */
-
 const FALLBACK_SECTORS = [
   { name: 'Multifamily', iconPath: '/uploads/2025/10/Envision-Icons-Iso-01-Multifamily.png' },
   { name: 'Hospitality', iconPath: '/uploads/2025/10/Envision-Icons-Iso-02-Hospitality.png' },
@@ -78,32 +74,6 @@ const FALLBACK_SECTORS = [
   { name: 'Site Development', iconPath: '/uploads/2025/10/Envision-Icons-Iso-04-Site-Development.png' },
   { name: 'Self Storage', iconPath: '/uploads/2025/10/Envision-Icons-Iso-05-Self-Storage.png' },
   { name: 'Retail', iconPath: '/uploads/2025/10/Envision-Icons-Iso-06-Retail.png' },
-]
-
-const FALLBACK_CAPABILITY_TILES = [
-  {
-    title: 'Preconstruction Services',
-    bg: '/uploads/2024/05/preconsteuction-bk.png',
-    href: '/pre-construction',
-  },
-  {
-    title: 'Architectural Design',
-    bg: '/uploads/2024/05/architectural-bk.png',
-    href: '#',
-  },
-  {
-    title: 'Commercial Construction',
-    bg: '/uploads/2024/05/commercial-bk.png',
-    href: '#',
-  },
-]
-
-const FALLBACK_TEAM = [
-  { name: 'Avi Reddy', photo: '/uploads/2024/06/Avi_Reddy.png', role: '' },
-  { name: 'Zach Walldorff', photo: '/uploads/2024/06/Zach_Walldorff.png', role: '' },
-  { name: 'David Epps', photo: '/uploads/2024/06/David_Epps.png', role: '' },
-  { name: 'Adam Meier', photo: '/uploads/2025/09/Adam-Meier.png', role: '' },
-  { name: 'Donald Hayes', photo: '/uploads/2025/12/Donald-Hayes.png', role: 'Operations Manager' },
 ]
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -126,20 +96,14 @@ export default async function HomePage() {
         }))
       : FALLBACK_SECTORS
 
-  const team =
-    page?.teamMembers && page.teamMembers.length > 0
-      ? page.teamMembers.map((m) => ({
-          name: m.name ?? '',
-          photo: m.photoUrl ?? '',
-          role: m.role ?? '',
-        }))
-      : FALLBACK_TEAM
-
   return (
     <>
-      {/* ============= HERO — BUILD WITH INTELLIGENCE (fades in on load) ============= */}
+      {/* ============= HERO — BUILD WITH INTELLIGENCE. (left-aligned, fade-in) ============= */}
       <section className="env-hero-tagline">
-        <h1 className="env-hero-tagline-text">BUILD WITH INTELLIGENCE.</h1>
+        <h1 className="env-hero-tagline-text">
+          <span className="env-hero-tagline-outline">BUILD WITH </span>
+          <span className="env-hero-tagline-solid">INTELLIGENCE.</span>
+        </h1>
       </section>
 
       {/* ============= HERO VIDEO (separate section, full-bleed) ============= */}
@@ -213,7 +177,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ============= CAPABILITIES (sectors + 3 photo tiles 600px tall) ============= */}
+      {/* ============= CAPABILITIES (sectors + 3 photo tiles + LiDAR detail) ============= */}
       <section id="expertise" className="bg-white py-20 md:py-28">
         <div className="env-container">
           <div className="max-w-3xl">
@@ -232,23 +196,14 @@ export default async function HomePage() {
             ))}
           </div>
 
-          {/* Tall photo-backed tiles, 600px each */}
-          <div className="mt-16 env-tiles-row">
-            {FALLBACK_CAPABILITY_TILES.map((tile) => (
-              <a key={tile.title} href={tile.href} className="env-tiles-tile">
-                <div className="env-tiles-tile-container">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img className="env-tiles-tile-background" src={tile.bg} alt="" />
-                  <div className="env-tiles-tile-shadow" />
-                  <h3 className="env-tiles-tile-title">{tile.title}</h3>
-                </div>
-              </a>
-            ))}
+          {/* Three 600px tiles with hover interactions + LiDAR detail expansion */}
+          <div className="mt-16">
+            <CapabilitiesSection />
           </div>
         </div>
       </section>
 
-      {/* ============= EXECUTIVE TEAM ============= */}
+      {/* ============= EXECUTIVE TEAM (carousel, 3-at-a-time) ============= */}
       <section id="people" className="bg-white py-20 md:py-28">
         <div className="env-container">
           <div className="max-w-3xl mx-auto text-center">
@@ -257,29 +212,21 @@ export default async function HomePage() {
               Meet Our Executive Team
             </h2>
           </div>
-          <div className="env-ts-grid mt-12">
-            {team.map((m) => (
-              <div key={m.name} className="env-ts-member">
-                <div className="env-ts-member-image">
-                  <div className="env-ts-member-image-bg" />
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={m.photo} alt={m.name} />
-                </div>
-                <p className="env-ts-member-name">{m.name}</p>
-                {m.role && <p className="env-ts-member-position">{m.role}</p>}
-              </div>
-            ))}
+          <div className="mt-12">
+            <ExecutiveTeam />
           </div>
         </div>
       </section>
 
       {/* ============= READY TO TALK? (contact form, light bg) ============= */}
       <section id="contact-us" className="bg-env-bg-soft text-env-dark-1 py-20 md:py-28">
-        <div className="env-container max-w-3xl">
+        <div className="env-container max-w-2xl">
           <h2 className="text-3xl md:text-5xl font-light tracking-tight">
             {page?.contactHeading ?? 'Ready to Talk?'}
           </h2>
-          <PortableTextOrFallback value={page?.contactBody} fallback="" />
+          <p className="mt-4 text-base text-neutral-700">
+            Find out more information about what we can accomplish together.
+          </p>
           <div className="mt-12">
             <ContactForm />
           </div>

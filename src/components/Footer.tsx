@@ -16,83 +16,116 @@ async function getSiteSettings(): Promise<SiteSettings> {
 }
 
 /**
- * Site footer — mirrors the legacy structure (logo, contact, minority-owned
- * statement, address, ENVSN.COM mark). Pulls editable content from Sanity
- * siteSettings singleton; falls back to literal values from the legacy site
- * so the page renders correctly before Sanity is seeded.
+ * Site footer — three-column layout matching the legacy:
+ *   1) White logo + social icons + copyright
+ *   2) Quick Links (Culture, Expertise, People, Pre Construction)
+ *   3) Contact (phone, address) + IICRC Certified Firm badge
+ *
+ * The footer logo asset (logo_footer_prime.png) is dark; we invert it
+ * via CSS filter to render white on the dark footer background.
  */
 export async function Footer() {
   const settings = await getSiteSettings()
 
+  const phone = settings?.contactPhone ?? '844-4-ENVSN.CO'
   const address =
     settings?.address ??
-    '8601 Dunwoody Place, Ste 200\nSandy Springs, GA 30350'
-  const phone = settings?.contactPhone ?? '470.228.0766'
-  const email = settings?.contactEmail ?? 'info@envsn.com'
-  const logoUrl =
-    settings?.footerLogoUrl ?? '/uploads/2024/05/logo_footer_prime.png'
+    '8601 Dunwoody Pl\nSuite 200\nSandy Springs, GA 30350'
 
   return (
     <footer className="env-footer bg-env-dark-1 text-white">
-      <div className="env-container py-16">
-        <div className="grid gap-12 md:grid-cols-3">
-          <div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={logoUrl}
-              alt="Envision Construction"
-              width={220}
-              height={40}
-              className="h-10 w-auto invert brightness-200"
-            />
-            <p className="mt-6 text-sm text-neutral-300 leading-relaxed">
-              Envision Construction is a Minority Owned Business.
-            </p>
+      <div className="env-container py-16 grid gap-12 md:grid-cols-3 items-start">
+        {/* Col 1 — logo + social + copyright */}
+        <div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/uploads/2024/05/logo_footer_prime.png"
+            alt="Envision Construction"
+            width={220}
+            height={40}
+            className="h-10 w-auto env-footer-logo"
+          />
+          <div className="mt-6 flex items-center gap-3">
+            <a
+              href="https://www.linkedin.com/company/envsn"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="inline-flex h-8 w-8 items-center justify-center"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/uploads/2024/05/linkedin_icon.png"
+                alt=""
+                className="h-6 w-6"
+              />
+            </a>
+            <a
+              href="https://www.instagram.com/envsn"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="inline-flex h-8 w-8 items-center justify-center"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/uploads/2024/05/Insta_icon.png"
+                alt=""
+                className="h-6 w-6"
+              />
+            </a>
           </div>
-
-          <div>
-            <h4 className="text-xs uppercase tracking-widest text-env-accent">
-              Office
-            </h4>
-            <address className="mt-3 not-italic text-sm text-neutral-200 whitespace-pre-line leading-relaxed">
-              {address}
-            </address>
-            <p className="mt-3 text-sm text-neutral-200">
-              <a href={`tel:${phone.replace(/\D/g, '')}`} className="hover:text-white">
-                {phone}
-              </a>
-            </p>
-          </div>
-
-          <div>
-            <h4 className="text-xs uppercase tracking-widest text-env-accent">
-              Contact
-            </h4>
-            <p className="mt-3 text-sm text-neutral-200">
-              <a href={`mailto:${email}`} className="hover:text-white">
-                {email}
-              </a>
-            </p>
-            <p className="mt-3 text-sm">
-              <Link
-                href={settings?.careersUrl ?? 'https://careers.envsn.com'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-neutral-200 hover:text-white uppercase tracking-wider"
-              >
-                Careers →
-              </Link>
-            </p>
-          </div>
+          <p className="mt-8 text-xs text-neutral-400">
+            © {new Date().getFullYear()} Envision Construction. All rights reserved
+          </p>
         </div>
 
-        <div className="mt-12 pt-6 border-t border-neutral-700 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <p className="text-xs uppercase tracking-widest text-neutral-400">
-            ENVSN.COM
+        {/* Col 2 — Quick Links */}
+        <div>
+          <h4 className="text-base font-semibold text-white">Quick Links</h4>
+          <ul className="mt-4 space-y-2 text-sm text-neutral-300">
+            <li>
+              <Link href="/#culture" className="hover:text-white">
+                Culture
+              </Link>
+            </li>
+            <li>
+              <Link href="/#expertise" className="hover:text-white">
+                Expertise
+              </Link>
+            </li>
+            <li>
+              <Link href="/#people" className="hover:text-white">
+                People
+              </Link>
+            </li>
+            <li>
+              <Link href="/pre-construction" className="hover:text-white">
+                Pre Construction
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* Col 3 — Contact + IICRC badge */}
+        <div>
+          <h4 className="text-base font-semibold text-white">Contact Us</h4>
+          <p className="mt-4 text-sm text-neutral-300">
+            <a href={`tel:${phone.replace(/[^0-9A-Za-z]/g, '')}`} className="hover:text-white">
+              {phone}
+            </a>
           </p>
-          <p className="text-xs text-neutral-500">
-            © {new Date().getFullYear()} Envision Construction. All rights reserved.
-          </p>
+          <address className="mt-4 not-italic text-sm text-neutral-300 whitespace-pre-line leading-relaxed">
+            {address}
+          </address>
+          <div className="mt-6">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/uploads/2024/05/footer-c-firm.png"
+              alt="IICRC Certified Firm"
+              className="h-24 w-auto"
+            />
+          </div>
         </div>
       </div>
     </footer>
