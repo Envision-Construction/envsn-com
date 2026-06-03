@@ -57,7 +57,7 @@ const DETAILS: Record<
     ],
     ctaHref: '/pre-construction',
     ctaLabel: 'Pre Construction Services',
-    videoUrl: '/videos/3D-Site-Mapping_01.mp4',
+    videoUrl: '/videos/env-lidar-video.mp4',
   },
 }
 
@@ -155,11 +155,11 @@ export function CapabilitiesSection({
                 {detail.videoUrl ? (
                   <video
                     src={detail.videoUrl}
-                    autoPlay
                     muted
                     loop
                     playsInline
                     controls
+                    preload="metadata"
                     className="w-full aspect-video object-cover rounded"
                   />
                 ) : (
