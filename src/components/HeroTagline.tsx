@@ -33,10 +33,12 @@ export function HeroTagline() {
       // Visible portion of the section, in viewport coords
       const visibleTop = Math.max(rect.top, NAVBAR_HEIGHT)
       const visibleBottom = Math.min(rect.bottom, viewportH)
+      const visibleHeight = visibleBottom - visibleTop
 
-      // If section is entirely above or below the viewport, reset
-      if (visibleBottom <= visibleTop) {
+      // If section is entirely above or below the viewport, hide
+      if (visibleHeight <= 0) {
         tracker.style.transform = 'translateY(0px)'
+        tracker.style.opacity = '0'
         return
       }
 
@@ -49,6 +51,16 @@ export function HeroTagline() {
       // Offset needed to move the text from natural to visible center
       const offset = visibleCenter - naturalCenter
       tracker.style.transform = `translateY(${offset.toFixed(1)}px)`
+
+      // Fade out when the visible white space gets too small to comfortably
+      // hold the tagline — start fade at 320px, fully invisible at 140px.
+      const FADE_START = 320
+      const FADE_END = 140
+      let opacity = 1
+      if (visibleHeight < FADE_START) {
+        opacity = Math.max(0, (visibleHeight - FADE_END) / (FADE_START - FADE_END))
+      }
+      tracker.style.opacity = opacity.toFixed(2)
     }
 
     const schedule = () => {

@@ -158,42 +158,46 @@ export default async function HomePage() {
       </ScrollFade>
 
       {/* ============= TESTIMONIAL — Ryan Pastor ============= */}
-      <section className="env-quote-section">
-        <blockquote className="env-quote-body">
-          &ldquo;The innovation tech stack Envision is building{' '}
-          <span className="env-quote-emphasis">
-            will revolutionize the construction industry.&rdquo;
-          </span>
-        </blockquote>
-        <div className="env-quote-author">
-          <p className="env-quote-author-name">Ryan Pastor</p>
-          <p className="env-quote-author-role">Manager, BuildingPoint SouthEast</p>
-        </div>
-      </section>
+      <ScrollFade>
+        <section className="env-quote-section">
+          <blockquote className="env-quote-body">
+            &ldquo;The innovation tech stack Envision is building{' '}
+            <span className="env-quote-emphasis">
+              will revolutionize the construction industry.&rdquo;
+            </span>
+          </blockquote>
+          <div className="env-quote-author">
+            <p className="env-quote-author-name">Ryan Pastor</p>
+            <p className="env-quote-author-role">Manager, BuildingPoint SouthEast</p>
+          </div>
+        </section>
+      </ScrollFade>
 
       {/* ============= CAPABILITIES ============= */}
-      <section id="expertise" className="bg-white py-20 md:py-28">
-        <div className="env-container">
-          <div className="env-section-head">
-            <p className="env-eyebrow">Expertise</p>
-            <h2>Capabilities</h2>
-          </div>
+      <ScrollFade>
+        <section id="expertise" className="bg-white py-20 md:py-28">
+          <div className="env-container">
+            <div className="env-section-head">
+              <p className="env-eyebrow">Expertise</p>
+              <h2>Capabilities</h2>
+            </div>
 
-          <div className="mt-12 grid gap-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-            {sectors.map((s) => (
-              <div key={s.name} className="text-center">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={s.iconPath} alt={s.name} className="mx-auto h-24 w-24 object-contain" />
-                <p className="mt-3 text-sm font-medium text-neutral-800">{s.name}</p>
-              </div>
-            ))}
-          </div>
+            <div className="mt-12 grid gap-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+              {sectors.map((s) => (
+                <div key={s.name} className="text-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={s.iconPath} alt={s.name} className="mx-auto h-24 w-24 object-contain" />
+                  <p className="mt-3 text-sm font-medium text-neutral-800">{s.name}</p>
+                </div>
+              ))}
+            </div>
 
-          <div className="mt-16">
-            <CapabilitiesSection />
+            <div className="mt-16">
+              <CapabilitiesSection />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </ScrollFade>
 
       {/* ============= EXECUTIVE TEAM ============= */}
       <section id="people" className="bg-white py-20 md:py-28">
