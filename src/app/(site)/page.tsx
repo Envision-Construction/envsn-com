@@ -142,7 +142,7 @@ export default async function HomePage() {
       {/* ============= TECHNOLOGY (text left, carousel right — matches Diversity/About layout) ============= */}
       <ScrollFade>
         <section className="bg-white py-20 md:py-28">
-          <div className="env-container">
+          <div className="env-container-narrow">
             <div className="env-section-head">
               <p className="env-eyebrow">{page?.technologyEyebrow ?? 'Culture'}</p>
               <h2>{page?.technologyHeading ?? 'Technology'}</h2>
@@ -176,7 +176,7 @@ export default async function HomePage() {
       {/* ============= CAPABILITIES ============= */}
       <ScrollFade>
         <section id="expertise" className="bg-white py-20 md:py-28">
-          <div className="env-container">
+          <div className="env-container-narrow">
             <div className="env-section-head">
               <p className="env-eyebrow">Expertise</p>
               <h2>Capabilities</h2>
@@ -201,7 +201,7 @@ export default async function HomePage() {
 
       {/* ============= EXECUTIVE TEAM ============= */}
       <section id="people" className="bg-white py-20 md:py-28">
-        <div className="env-container">
+        <div className="env-container-narrow">
           <div className="env-section-head text-center mx-auto">
             <p className="env-eyebrow">People</p>
             <h2>Meet Our Executive Team</h2>
@@ -250,7 +250,7 @@ function CultureSection({
 }) {
   return (
     <section id={id} className="bg-white py-20 md:py-28">
-      <div className="env-container">
+      <div className="env-container-narrow">
         <div className="env-section-head">
           <p className="env-eyebrow">{eyebrow}</p>
           <h2>{heading}</h2>
@@ -261,7 +261,7 @@ function CultureSection({
           </div>
           {image && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={image} alt="" className="w-full rounded-lg object-cover" />
+            <img src={image} alt="" className="env-culture-image w-full object-cover" />
           )}
         </div>
       </div>

@@ -47,6 +47,28 @@ body {
   padding-inline: 1.5rem;
 }
 
+/* Narrower container for content sections — ~80% of viewport, capped at 1280px.
+ * Used on Culture / Testimonial / Capabilities / Executive Team. Ready to
+ * Talk keeps the regular env-container. */
+.env-container-narrow {
+  width: 80%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@media (max-width: 767px) {
+  .env-container-narrow {
+    width: 100%;
+  }
+}
+
+/* Subtle drop shadow used on Culture / Technology images */
+.env-culture-image {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+}
+
 /* ============================================================
  * Eyebrow — dark env-green (same as Ryan Pastor author name), ~16px
  * ============================================================ */
@@ -387,7 +409,8 @@ body {
   line-height: 1.35;
   color: var(--color-env-dark-1);
   text-align: center;
-  max-width: 980px;
+  width: 80%;
+  max-width: 1280px;
   margin-inline: auto;
   padding-inline: 1.5rem;
 }
@@ -400,7 +423,8 @@ body {
 
 .env-quote-author {
   text-align: right;
-  max-width: 1100px;
+  width: 80%;
+  max-width: 1280px;
   margin: 48px auto 0;
   padding-inline: 1.5rem;
 }

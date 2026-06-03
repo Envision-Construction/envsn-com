@@ -46,7 +46,7 @@ export function TechnologyCarousel({
         <img
           src={current.imageUrl}
           alt={current.title}
-          className="w-full max-h-[600px] object-cover rounded"
+          className="env-culture-image w-full max-h-[600px] object-cover"
         />
 
         {/* Left arrow */}
