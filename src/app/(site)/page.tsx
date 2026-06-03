@@ -26,6 +26,24 @@ type Sector = {
   order?: number
 }
 
+type TeamMemberDoc = {
+  _id: string
+  name?: string
+  role?: string
+  bio?: string
+  photoUrl?: string
+  order?: number
+}
+
+type CapabilityTileDoc = {
+  title?: string
+  description?: string
+  imageUrl?: string
+  href?: string
+  ctaLabel?: string
+  ctaDetailKey?: string
+}
+
 type HomePage = {
   heroHeadingLine1?: string
   heroHeadingLine2?: string
@@ -47,8 +65,10 @@ type HomePage = {
   expertiseHeading?: string
   expertiseBody?: PortableTextBlock[]
   sectors?: Sector[]
+  capabilityTiles?: CapabilityTileDoc[]
   peopleEyebrow?: string
   peopleHeading?: string
+  teamMembers?: TeamMemberDoc[]
   contactEyebrow?: string
   contactHeading?: string
   contactBody?: PortableTextBlock[]
@@ -178,8 +198,11 @@ export default async function HomePage() {
         <section id="expertise" className="bg-white py-20 md:py-28">
           <div className="env-container-narrow">
             <div className="env-section-head">
-              <p className="env-eyebrow">Expertise</p>
-              <h2>Capabilities</h2>
+              <p className="env-eyebrow">{page?.expertiseEyebrow ?? 'Expertise'}</p>
+              <h2>{page?.expertiseHeading ?? 'Capabilities'}</h2>
+            </div>
+            <div className="env-section-body">
+              <PortableTextOrFallback value={page?.expertiseBody} fallback="" />
             </div>
 
             <div className="mt-12 grid gap-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
@@ -193,7 +216,20 @@ export default async function HomePage() {
             </div>
 
             <div className="mt-16">
-              <CapabilitiesSection />
+              <CapabilitiesSection
+                tiles={page?.capabilityTiles
+                  ?.filter((t): t is CapabilityTileDoc & { title: string } =>
+                    Boolean(t.title),
+                  )
+                  .map((t) => ({
+                    title: t.title,
+                    description: t.description,
+                    imageUrl: t.imageUrl,
+                    href: t.href,
+                    ctaLabel: t.ctaLabel,
+                    ctaDetailKey: t.ctaDetailKey,
+                  }))}
+              />
             </div>
           </div>
         </section>
@@ -203,11 +239,22 @@ export default async function HomePage() {
       <section id="people" className="bg-white py-20 md:py-28">
         <div className="env-container-narrow">
           <div className="env-section-head text-center mx-auto">
-            <p className="env-eyebrow">People</p>
-            <h2>Meet Our Executive Team</h2>
+            <p className="env-eyebrow">{page?.peopleEyebrow ?? 'People'}</p>
+            <h2>{page?.peopleHeading ?? 'Meet Our Executive Team'}</h2>
           </div>
           <div className="mt-12">
-            <ExecutiveTeam />
+            <ExecutiveTeam
+              members={page?.teamMembers
+                ?.filter((m): m is TeamMemberDoc & { name: string } =>
+                  Boolean(m.name),
+                )
+                .map((m) => ({
+                  name: m.name,
+                  role: m.role,
+                  bio: m.bio,
+                  photoUrl: m.photoUrl,
+                }))}
+            />
           </div>
         </div>
       </section>

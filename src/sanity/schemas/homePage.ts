@@ -163,6 +163,62 @@ export const homePage = defineType({
       group: 'expertise',
       of: [{ type: 'reference', to: [{ type: 'sector' }] }],
     }),
+    defineField({
+      name: 'capabilityTiles',
+      title: 'Capability Tiles',
+      description:
+        'The 3 photo-backed tiles below the sector icons. Each shows the title at rest and reveals the description + CTA on hover.',
+      type: 'array',
+      group: 'expertise',
+      of: [
+        {
+          type: 'object',
+          name: 'capabilityTile',
+          fields: [
+            {
+              name: 'title',
+              title: 'Title',
+              type: 'string',
+              validation: (r) => r.required(),
+            },
+            {
+              name: 'description',
+              title: 'Description (shown on hover)',
+              type: 'text',
+              rows: 4,
+            },
+            {
+              name: 'image',
+              title: 'Background image',
+              type: 'image',
+              options: { hotspot: true },
+            },
+            {
+              name: 'href',
+              title: 'Link target (optional)',
+              description:
+                'If set, clicking the title navigates here. Leave blank if the tile only has a CTA button.',
+              type: 'string',
+            },
+            {
+              name: 'ctaLabel',
+              title: 'CTA button label (optional)',
+              description:
+                'e.g. "3D LiDAR Mapping". Leave blank to hide the button.',
+              type: 'string',
+            },
+            {
+              name: 'ctaDetailKey',
+              title: 'Detail panel key (optional)',
+              description:
+                'Key into the in-code DETAILS lookup (currently only "lidar" is wired up). Set this on the Preconstruction tile.',
+              type: 'string',
+            },
+          ],
+          preview: { select: { title: 'title', media: 'image' } },
+        },
+      ],
+    }),
 
     // ---------- People / Team ----------
     defineField({

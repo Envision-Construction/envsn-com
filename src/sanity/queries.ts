@@ -39,9 +39,17 @@ export const homePageQuery = /* groq */ `
     sectors[]->{
       _id, name, description, "iconUrl": icon.asset->url, order
     },
+    capabilityTiles[]{
+      title,
+      description,
+      href,
+      ctaLabel,
+      ctaDetailKey,
+      "imageUrl": image.asset->url
+    },
     peopleEyebrow, peopleHeading, peopleBody,
     teamMembers[]->{
-      _id, name, role, "photoUrl": photo.asset->url, order
+      _id, name, role, bio, "photoUrl": photo.asset->url, order
     },
     contactEyebrow, contactHeading, contactBody,
     metaTitle, metaDescription,

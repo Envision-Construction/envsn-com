@@ -2,30 +2,35 @@
 
 import { useEffect, useState } from 'react'
 
-type Tile = {
-  key: string
+export type CapabilityTile = {
   title: string
-  bg: string
   description?: string
-  cta?: { label: string; detailKey: string }
+  imageUrl?: string
+  href?: string
+  ctaLabel?: string
+  ctaDetailKey?: string
 }
 
-const TILES: Tile[] = [
+/**
+ * Fallback used only when Sanity has no capabilityTiles yet — keeps the
+ * legacy 3-tile layout populated. Once tiles are added in Studio, those
+ * replace these defaults.
+ */
+const FALLBACK_TILES: CapabilityTile[] = [
   {
-    key: 'precon',
     title: 'Preconstruction Services',
-    bg: '/uploads/2024/05/preconsteuction-bk.png',
-    cta: { label: '3D LiDAR Mapping', detailKey: 'lidar' },
+    imageUrl: '/uploads/2024/05/preconsteuction-bk.png',
+    ctaLabel: '3D LiDAR Mapping',
+    ctaDetailKey: 'lidar',
+    href: '/pre-construction',
   },
   {
-    key: 'arch',
     title: 'Architectural Design',
-    bg: '/uploads/2024/05/architectural-bk.png',
+    imageUrl: '/uploads/2024/05/architectural-bk.png',
   },
   {
-    key: 'commercial',
     title: 'Commercial Construction',
-    bg: '/uploads/2024/05/commercial-bk.png',
+    imageUrl: '/uploads/2024/05/commercial-bk.png',
   },
 ]
 
@@ -49,10 +54,14 @@ const DETAILS: Record<
   },
 }
 
-export function CapabilitiesSection() {
+export function CapabilitiesSection({
+  tiles,
+}: {
+  tiles?: CapabilityTile[]
+}) {
+  const list = tiles && tiles.length > 0 ? tiles : FALLBACK_TILES
+
   const [openDetail, setOpenDetail] = useState<string | null>(null)
-  // Keep the content rendered briefly after openDetail goes null so the
-  // close animation (max-height + opacity) can run before unmounting.
   const [renderedDetail, setRenderedDetail] = useState<string | null>(null)
 
   useEffect(() => {
@@ -69,10 +78,12 @@ export function CapabilitiesSection() {
   return (
     <>
       <div className="env-tiles-row">
-        {TILES.map((tile) => (
-          <div key={tile.key} className="env-tiles-tile">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={tile.bg} alt="" className="env-tiles-tile-bg" />
+        {list.map((tile, idx) => (
+          <div key={tile.title + idx} className="env-tiles-tile">
+            {tile.imageUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={tile.imageUrl} alt="" className="env-tiles-tile-bg" />
+            )}
             <div className="env-tiles-tile-shadow" />
             <div className="env-tiles-tile-body">
               <h3 className="env-tiles-tile-title">{tile.title}</h3>
@@ -81,14 +92,19 @@ export function CapabilitiesSection() {
                 {tile.description && (
                   <p className="env-tiles-tile-desc">{tile.description}</p>
                 )}
-                {tile.cta && (
+                {tile.ctaLabel && tile.ctaDetailKey && (
                   <button
                     type="button"
-                    onClick={() => setOpenDetail(tile.cta!.detailKey)}
+                    onClick={() => setOpenDetail(tile.ctaDetailKey!)}
                     className="env-tiles-tile-button"
                   >
-                    {tile.cta.label} <span aria-hidden>›</span>
+                    {tile.ctaLabel} <span aria-hidden>›</span>
                   </button>
+                )}
+                {tile.ctaLabel && !tile.ctaDetailKey && tile.href && (
+                  <a href={tile.href} className="env-tiles-tile-button">
+                    {tile.ctaLabel} <span aria-hidden>›</span>
+                  </a>
                 )}
               </div>
             </div>
@@ -96,8 +112,6 @@ export function CapabilitiesSection() {
         ))}
       </div>
 
-      {/* Detail panel — always in DOM so max-height transition can animate.
-          Content updates when openDetail changes; closed state collapses to 0. */}
       <div
         className="env-tiles-detail-wrap"
         data-open={openDetail ? 'true' : 'false'}
