@@ -138,17 +138,17 @@ export default async function HomePage() {
         body={page?.diversityBody}
       />
 
-      {/* ============= TECHNOLOGY (carousel) ============= */}
+      {/* ============= TECHNOLOGY (text left, carousel right — matches Diversity/About layout) ============= */}
       <section className="bg-white py-20 md:py-28">
         <div className="env-container">
           <div className="env-section-head">
             <p className="env-eyebrow">{page?.technologyEyebrow ?? 'Culture'}</p>
             <h2>{page?.technologyHeading ?? 'Technology'}</h2>
           </div>
-          <div className="env-section-body">
-            <PortableTextOrFallback value={page?.technologyBody} fallback="" />
-          </div>
-          <div className="mt-10 bg-env-dark-1 rounded-lg p-4 md:p-6">
+          <div className="env-section-body env-section-split">
+            <div className="text-base leading-relaxed text-neutral-700">
+              <PortableTextOrFallback value={page?.technologyBody} fallback="" />
+            </div>
             <TechnologyCarousel features={technologyFeatures} />
           </div>
         </div>

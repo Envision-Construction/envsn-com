@@ -63,19 +63,21 @@ export function CapabilitiesSection() {
             <div className="env-tiles-tile-shadow" />
             <div className="env-tiles-tile-body">
               <h3 className="env-tiles-tile-title">{tile.title}</h3>
-              <div className="env-tiles-tile-rule" />
-              {tile.description && (
-                <p className="env-tiles-tile-desc">{tile.description}</p>
-              )}
-              {tile.cta && (
-                <button
-                  type="button"
-                  onClick={() => setOpenDetail(tile.cta!.detailKey)}
-                  className="env-tiles-tile-button"
-                >
-                  {tile.cta.label} <span aria-hidden>›</span>
-                </button>
-              )}
+              <div className="env-tiles-tile-extras">
+                <div className="env-tiles-tile-rule" />
+                {tile.description && (
+                  <p className="env-tiles-tile-desc">{tile.description}</p>
+                )}
+                {tile.cta && (
+                  <button
+                    type="button"
+                    onClick={() => setOpenDetail(tile.cta!.detailKey)}
+                    className="env-tiles-tile-button"
+                  >
+                    {tile.cta.label} <span aria-hidden>›</span>
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         ))}

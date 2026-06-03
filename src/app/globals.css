@@ -13,7 +13,7 @@
   --color-env-dark-3: #312b2d;
   --color-env-dark-4: #3e3e3e;
   --color-env-gray: #d3d3d3;
-  --color-env-bg-soft: #f7f7f7;
+  --color-env-bg-soft: #f5f5f5;
   --color-env-bg-light: #efefef;
 
   --font-sans: 'Montserrat', Helvetica, Arial, sans-serif;
@@ -48,18 +48,18 @@ body {
 }
 
 /* ============================================================
- * Eyebrow — bright green, ~2x the previous size
+ * Eyebrow — dark env-green (same as Ryan Pastor author name), ~16px
  * ============================================================ */
 .env-eyebrow {
   font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-env-green-light);
+  color: var(--color-env-green);
 }
 
 /* ============================================================
- * Section layout — tighter spacing between eyebrow / heading / body
+ * Section layout
  * ============================================================ */
 .env-section-head { max-width: 720px; }
 .env-section-head h2 {
@@ -70,20 +70,18 @@ body {
   letter-spacing: -0.01em;
 }
 
-.env-section-body {
-  margin-top: 16px; /* reduced from prior mt-8 */
-}
+.env-section-body { margin-top: 16px; }
 
-/* Image+text split — image column 30% wider than before */
+/* Image+text split — text on left, image on right, top-aligned so the
+ * heading-to-body distance feels consistent regardless of image height. */
 .env-section-split {
   display: grid;
   gap: 32px;
-  align-items: center;
+  align-items: start;
 }
 
 @media (min-width: 768px) {
   .env-section-split {
-    /* Was 1fr 1fr; image column now ~30% larger relative to text */
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
   }
 }
@@ -127,7 +125,10 @@ body {
 }
 
 /* ============================================================
- * Capability tiles
+ * Capability tiles — title pinned to bottom; rule + description +
+ * button live inside .env-tiles-tile-extras which expands UP from
+ * 0 height on hover, pushing the title up smoothly. Result: title
+ * is at the same vertical anchor on all 3 tiles at rest.
  * ============================================================ */
 .env-tiles-row {
   display: grid;
@@ -151,7 +152,6 @@ body {
   object-fit: cover;
   transition: transform 600ms ease-out;
 }
-
 .env-tiles-tile:hover .env-tiles-tile-bg { transform: scale(1.05); }
 
 .env-tiles-tile-shadow {
@@ -159,14 +159,13 @@ body {
   background: rgba(0, 0, 0, 0.55);
   transition: background-color 400ms ease-out;
 }
-
 .env-tiles-tile:hover .env-tiles-tile-shadow { background: rgba(0, 0, 0, 0.75); }
 
 .env-tiles-tile-body {
   position: absolute; inset: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-end;   /* bottom-anchored */
   padding: 40px;
   z-index: 2;
 }
@@ -177,14 +176,24 @@ body {
   line-height: 1.1;
 }
 
+/* Extras: rule + description + button — collapsed at rest, expand on hover */
+.env-tiles-tile-extras {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 450ms ease-out, opacity 300ms ease-out 100ms;
+}
+
+.env-tiles-tile:hover .env-tiles-tile-extras {
+  max-height: 320px;
+  opacity: 1;
+}
+
 .env-tiles-tile-rule {
   width: 90px;
   height: 3px;
   background: var(--color-env-green-light);
   margin-top: 20px;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 350ms ease-out, transform 350ms ease-out;
 }
 
 .env-tiles-tile-desc {
@@ -192,9 +201,6 @@ body {
   color: #f5f5f5;
   max-width: 90%;
   margin-top: 16px;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 350ms ease-out 80ms, transform 350ms ease-out 80ms;
 }
 
 .env-tiles-tile-button {
@@ -207,19 +213,9 @@ body {
   font-weight: 700; font-size: 14px;
   border-radius: 999px;
   align-self: flex-start;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 350ms ease-out 160ms, transform 350ms ease-out 160ms, background-color 200ms;
+  transition: background-color 200ms;
 }
-
 .env-tiles-tile-button:hover { background: var(--color-env-accent); }
-
-.env-tiles-tile:hover .env-tiles-tile-rule,
-.env-tiles-tile:hover .env-tiles-tile-desc,
-.env-tiles-tile:hover .env-tiles-tile-button {
-  opacity: 1;
-  transform: translateY(0);
-}
 
 .env-tiles-detail-wrap {
   width: 100vw;
@@ -286,21 +282,22 @@ body {
 }
 
 /* ============================================================
- * Technology carousel arrows (matches exec team style)
+ * Technology carousel — sits inline as the "image" column in the
+ * env-section-split layout, no dark background card.
  * ============================================================ */
 .env-tech-arrow {
-  width: 48px; height: 48px;
+  width: 44px; height: 44px;
   border-radius: 999px;
-  border: 2px solid #ffffff;
-  background: transparent;
-  color: white;
+  border: 1.5px solid var(--color-env-dark-1);
+  background: rgba(255,255,255,0.92);
+  color: var(--color-env-dark-1);
   display: inline-flex;
   align-items: center; justify-content: center;
-  font-size: 22px; line-height: 1;
+  font-size: 20px; line-height: 1;
   cursor: pointer;
   transition: all 200ms;
 }
-.env-tech-arrow:hover { background: rgba(255,255,255,0.15); }
+.env-tech-arrow:hover { background: var(--color-env-dark-1); color: white; }
 
 /* ============================================================
  * Executive team
@@ -344,36 +341,43 @@ body {
 .env-ts-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
 
 /* ============================================================
- * Ryan Pastor — quote, with "revolutionize the construction industry."
- * span green
+ * Ryan Pastor testimonial — soft gray bg, centered quote,
+ * right-aligned author block (matches reference screenshot)
  * ============================================================ */
-.env-quote-section { background: #ffffff; padding-block: 96px; }
+.env-quote-section {
+  background: var(--color-env-bg-soft);
+  padding-block: 120px;
+}
+
 .env-quote-body {
-  font-size: clamp(28px, 4vw, 48px);
-  font-weight: 300; line-height: 1.3;
+  font-size: clamp(22px, 2.6vw, 34px);
+  font-weight: 600;
+  line-height: 1.35;
   color: var(--color-env-dark-1);
-  text-align: right;
-  max-width: 1100px; margin-inline: auto;
+  text-align: center;
+  max-width: 980px;
+  margin-inline: auto;
   padding-inline: 1.5rem;
 }
+
 .env-quote-emphasis { color: var(--color-env-green); }
 
 .env-quote-author {
   text-align: right;
-  max-width: 1100px; margin: 32px auto 0;
+  max-width: 1100px;
+  margin: 48px auto 0;
   padding-inline: 1.5rem;
 }
-.env-quote-author-name { font-size: 21px; font-weight: 600; color: var(--color-env-green); }
+.env-quote-author-name { font-size: 21px; font-weight: 700; color: var(--color-env-green); }
 .env-quote-author-role {
-  font-size: 13px; letter-spacing: 0.05em;
-  color: var(--color-env-dark-4);
-  text-transform: uppercase;
+  font-size: 13px; letter-spacing: 0.04em;
+  color: var(--color-env-green);
   margin-top: 4px;
+  font-weight: 400;
 }
 
 /* ============================================================
- * Form invalid feedback — red border once user has typed something
- * (skips empty/initial state)
+ * Form invalid feedback
  * ============================================================ */
 .env-form-field:invalid:not(:placeholder-shown) {
   border-color: #dc2626;
@@ -386,8 +390,7 @@ body {
 }
 
 /* ============================================================
- * Footer logo — force pure white via brightness(0) -> invert(1)
- * (works regardless of source PNG saturation/transparency)
+ * Footer logo — force pure white
  * ============================================================ */
 .env-footer-logo {
   filter: brightness(0) invert(1);
