@@ -162,9 +162,8 @@ export default async function HomePage() {
         <blockquote className="env-quote-body">
           &ldquo;The innovation tech stack Envision is building{' '}
           <span className="env-quote-emphasis">
-            will revolutionize the construction industry.
+            will revolutionize the construction industry.&rdquo;
           </span>
-          &rdquo;
         </blockquote>
         <div className="env-quote-author">
           <p className="env-quote-author-name">Ryan Pastor</p>

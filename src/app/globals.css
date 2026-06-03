@@ -84,7 +84,7 @@ body {
  * Image column ~15% larger than the previous 1.6fr ratio; gap widened. */
 .env-section-split {
   display: grid;
-  gap: 56px;
+  gap: 112px;
   align-items: start;
 }
 
