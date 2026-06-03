@@ -218,16 +218,16 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ============= READY TO TALK? (contact form, light bg) ============= */}
+      {/* ============= READY TO TALK? (centered, light bg) ============= */}
       <section id="contact-us" className="bg-env-bg-soft text-env-dark-1 py-20 md:py-28">
-        <div className="env-container max-w-2xl">
+        <div className="env-container max-w-2xl mx-auto text-center">
           <h2 className="text-3xl md:text-5xl font-light tracking-tight">
             {page?.contactHeading ?? 'Ready to Talk?'}
           </h2>
           <p className="mt-4 text-base text-neutral-700">
             Find out more information about what we can accomplish together.
           </p>
-          <div className="mt-12">
+          <div className="mt-12 flex justify-center">
             <ContactForm />
           </div>
         </div>

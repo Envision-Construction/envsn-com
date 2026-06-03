@@ -2,16 +2,6 @@
 
 import { useState } from 'react'
 
-/**
- * Capabilities — three photo-backed tiles + an expandable detail panel
- * that opens below the row when a tile's CTA button is clicked.
- *
- * The current tile structure is hardcoded for the legacy three categories.
- * Tile descriptions + detail-panel content can be edited later once the
- * preConstructionPage / capability schema is extended; for now we render
- * short structural placeholders that the user replaces in Studio.
- */
-
 type Tile = {
   key: string
   title: string
@@ -25,24 +15,24 @@ const TILES: Tile[] = [
     key: 'precon',
     title: 'Preconstruction Services',
     bg: '/uploads/2024/05/preconsteuction-bk.png',
-    description: '',
     cta: { label: '3D LiDAR Mapping', detailKey: 'lidar' },
   },
   {
     key: 'arch',
     title: 'Architectural Design',
     bg: '/uploads/2024/05/architectural-bk.png',
-    description: '',
   },
   {
     key: 'commercial',
     title: 'Commercial Construction',
     bg: '/uploads/2024/05/commercial-bk.png',
-    description: '',
   },
 ]
 
-const DETAILS: Record<string, { title: string; items: string[]; ctaHref: string; ctaLabel: string }> = {
+const DETAILS: Record<
+  string,
+  { title: string; items: string[]; ctaHref: string; ctaLabel: string }
+> = {
   lidar: {
     title: '3D LiDAR Mapping',
     items: [
@@ -91,9 +81,15 @@ export function CapabilitiesSection() {
         ))}
       </div>
 
-      {detail && (
-        <div className="env-tiles-detail">
-          <div className="env-container">
+      {/* Detail panel — always in DOM so max-height transition can animate.
+          Content updates when openDetail changes; closed state collapses to 0. */}
+      <div
+        className="env-tiles-detail-wrap"
+        data-open={openDetail ? 'true' : 'false'}
+        aria-hidden={!openDetail}
+      >
+        {detail && (
+          <div className="env-tiles-detail-inner">
             <div className="flex justify-end mb-6">
               <button
                 type="button"
@@ -120,15 +116,14 @@ export function CapabilitiesSection() {
                 </a>
               </div>
               <div className="flex items-center justify-center">
-                {/* Placeholder for the LiDAR demo image / video — swap in actual asset */}
                 <div className="w-full aspect-video bg-neutral-800 rounded flex items-center justify-center text-neutral-500 text-sm">
                   Demo image / video placeholder
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </>
   )
 }

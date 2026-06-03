@@ -1,17 +1,8 @@
 'use client'
 
-import { useActionState, useEffect, useRef } from 'react'
+import { useActionState, useEffect, useRef, useState } from 'react'
 
 import { submitContact, type ContactState } from '@/app/actions/contact'
-
-/**
- * Contact form — matches the legacy field set:
- *   First Name · Last Name · Phone · Email · Company · How can we help you?
- *
- * Honeypot field + Cloudflare Turnstile + server-side Zod validation
- * provide bot defense. Privacy disclosures + reCAPTCHA notice rendered
- * below the submit button.
- */
 
 const initialState: ContactState = { status: 'idle' }
 
@@ -24,12 +15,25 @@ declare global {
   }
 }
 
+/**
+ * Format US phone: strip non-digits, render (XXX) XXX-XXXX as the user types.
+ * Caps at 10 digits.
+ */
+function formatPhone(raw: string): string {
+  const digits = raw.replace(/\D/g, '').slice(0, 10)
+  if (digits.length === 0) return ''
+  if (digits.length <= 3) return `(${digits}`
+  if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
+}
+
 export function ContactForm() {
   const [state, formAction, isPending] = useActionState(
     submitContact,
     initialState,
   )
   const formRef = useRef<HTMLFormElement>(null)
+  const [phone, setPhone] = useState('')
   const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
 
   useEffect(() => {
@@ -38,6 +42,7 @@ export function ContactForm() {
     }
     if (state.status === 'success' && formRef.current) {
       formRef.current.reset()
+      setPhone('')
     }
   }, [state])
 
@@ -48,10 +53,10 @@ export function ContactForm() {
     <form
       ref={formRef}
       action={formAction}
-      className="w-full max-w-2xl space-y-4"
+      className="w-full max-w-2xl space-y-4 text-left"
       noValidate
     >
-      {/* Honeypot — hidden from humans, bots fill it */}
+      {/* Honeypot */}
       <div className="hidden" aria-hidden="true">
         <label>
           Website
@@ -77,21 +82,44 @@ export function ContactForm() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field
-          label="Phone"
-          name="phone"
-          type="tel"
-          autoComplete="tel"
-          error={fieldError('phone')}
-        />
-        <Field
-          label="Email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-          error={fieldError('email')}
-        />
+        <div>
+          <label htmlFor="phone" className="block text-xs uppercase tracking-widest text-neutral-700">
+            Phone
+          </label>
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            inputMode="numeric"
+            autoComplete="tel"
+            value={phone}
+            onChange={(e) => setPhone(formatPhone(e.target.value))}
+            placeholder="(555) 555-5555"
+            maxLength={14}
+            className="mt-1.5 block w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-env-green focus:ring-1 focus:ring-env-green outline-none"
+          />
+          {fieldError('phone') && (
+            <p className="mt-1 text-xs text-red-600">{fieldError('phone')}</p>
+          )}
+        </div>
+        <div>
+          <label htmlFor="email" className="block text-xs uppercase tracking-widest text-neutral-700">
+            Email *
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+            title="Please include @ and a domain ending (e.g. name@example.com)"
+            className="mt-1.5 block w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-env-green focus:ring-1 focus:ring-env-green outline-none"
+          />
+          {fieldError('email') && (
+            <p className="mt-1 text-xs text-red-600">{fieldError('email')}</p>
+          )}
+        </div>
       </div>
 
       <Field
