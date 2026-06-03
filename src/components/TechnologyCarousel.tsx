@@ -69,12 +69,12 @@ export function TechnologyCarousel({
         </button>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 w-full">
         <h3 className="text-base font-bold uppercase tracking-wider text-env-dark-1">
           {current.title}
         </h3>
         {current.description && (
-          <p className="mt-2 text-base text-neutral-700 leading-relaxed max-w-2xl">
+          <p className="mt-2 text-base text-neutral-700 leading-relaxed">
             {current.description}
           </p>
         )}
