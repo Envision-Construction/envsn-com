@@ -3,10 +3,12 @@ import Link from 'next/link'
 /**
  * Site header — matches the legacy Divi build.
  *
- * Layout: `env-header-container` is full-width with `justify-content: space-between`,
- * logo on the left, nav in the middle, Contact Us + search icon on the right.
- * The container caps at 1520px (legacy value) — wider than typical to keep the
- * nav from feeling cramped on large screens.
+ * Layout: env-header-container is full-width with justify-content: space-between,
+ * logo on the left, nav center, Contact Us + search icon on the right.
+ * Container caps at 1520px (legacy value).
+ *
+ * The search icon PNG is white-on-transparent, so it sits inside a black
+ * circular button to be visible against the white header.
  */
 
 type NavItem = { label: string; href: string; external?: boolean }
@@ -58,7 +60,7 @@ export function Header() {
           )}
         </nav>
 
-        {/* Right — Contact Us + search icon */}
+        {/* Right — Contact Us + search icon (black circle so the white icon is visible) */}
         <div className="env-header-menu-right flex items-center gap-3">
           <Link
             href="/#contact-us"
@@ -69,13 +71,13 @@ export function Header() {
           <button
             type="button"
             aria-label="Search"
-            className="env-header-search-icon-btn flex items-center justify-center w-9 h-9 rounded-full hover:bg-neutral-100 transition-colors"
+            className="env-header-search-icon-btn flex items-center justify-center w-10 h-10 rounded-full bg-black hover:bg-neutral-800 transition-colors"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/uploads/2025/11/search.png"
               alt=""
-              className="w-[22px] h-[22px]"
+              className="w-[18px] h-[18px]"
             />
           </button>
         </div>

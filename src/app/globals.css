@@ -6,11 +6,6 @@
  * Extracted from the legacy HSS-hosted Divi build to support
  * a 1:1 visual replica. Do not refresh to the 2026 Envision
  * Brand Standard here — that is a separate, future project.
- *
- * Primary brand green: #016d4a (env-green utility class)
- * Variants in legacy CSS: #006e47, #007853
- * Accent light-green: #d2eb8e (used sparingly)
- * Type stack: Montserrat (heading + body), Open Sans (fallback / chrome)
  * ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
@@ -38,21 +33,12 @@
   --text-display-xl: 96px;
   --text-display-lg: 50px;
   --text-display: 40px;
-  --text-h1: 36px;
-  --text-h2: 32px;
-  --text-h3: 26px;
-  --text-h4: 22px;
-  --text-h5: 20px;
-  --text-h6: 18px;
 }
 
 :root {
   --background: #ffffff;
   --foreground: #231f20;
 }
-
-/* Legacy site has no dark mode — explicitly opt out so the replica
- * doesn't invert on a user's preferred OS scheme. */
 
 html {
   background: var(--background);
@@ -72,14 +58,8 @@ body {
 /* ============================================================
  * Legacy utility classes (mirror env-* from the Divi child theme)
  * ============================================================ */
-.env-green {
-  color: var(--color-env-green);
-}
-
-.env-bold {
-  font-weight: 700;
-}
-
+.env-green { color: var(--color-env-green); }
+.env-bold { font-weight: 700; }
 .env-container {
   max-width: 1280px;
   margin-inline: auto;
@@ -87,69 +67,202 @@ body {
 }
 
 /* ============================================================
- * Hero: BUILD WITH INTELLIGENCE band — fades in on initial load
+ * Hero: BUILD WITH INTELLIGENCE — fills the env-animated-title slot
+ * (replaces the legacy "Construction is broken / We're fixing it"
+ *  animated title per direction 2026-06-03).
+ * Large display type, fades in on initial page load.
  * ============================================================ */
-.env-tagline-band {
-  background: var(--color-env-dark-1);
-  color: #fff;
-  text-align: center;
-  padding: 1.5rem 1rem;
-  letter-spacing: 0.2em;
-  font-weight: 700;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  opacity: 0;
-  animation: env-fade-in 1.2s ease-out 0.2s forwards;
-}
-
-@keyframes env-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ============================================================
- * env-animated-title — matches the legacy Divi module
- * ============================================================ */
-.env-animated-title {
+.env-hero-tagline {
   display: flex;
   flex-direction: column;
   height: 80vh;
+  min-height: 480px;
   justify-content: center;
+  align-items: center;
+  text-align: center;
   padding-inline: 1.5rem;
-  max-width: 1280px;
-  margin-inline: auto;
+  background: #ffffff;
 }
 
-.env-at-title {
-  font-size: 48px;
-  font-weight: 600;
-  line-height: 1.3;
+.env-hero-tagline-text {
+  font-weight: 700;
+  letter-spacing: 0.05em;
   color: var(--color-env-dark-1);
+  /* Large display: clamp from mobile 48px to desktop 144px */
+  font-size: clamp(48px, 12vw, 144px);
+  line-height: 1.05;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: env-fade-up 1.4s ease-out 0.3s forwards;
 }
 
-.env-at-title-line-2 {
-  color: var(--color-env-gray);
-  transition: color 2s ease;
+@keyframes env-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* When the AnimatedTitle component detects scroll, it adds env--is-scrolled
- * to the container, which flips line 2's color from gray to green. */
-.env-animated-title.env--is-scrolled .env-at-title-line-2 {
-  color: var(--color-env-green);
+/* ============================================================
+ * env-tiles-tile — Capabilities photo tiles (3-across, 600px tall)
+ * Mirrors the legacy module: white-text overlay on photo bg, hover
+ * darkens the shadow and lifts the container slightly.
+ * ============================================================ */
+.env-tiles-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
 }
 
 @media (max-width: 767px) {
-  .env-animated-title {
-    height: auto;
-    padding-block: 50px;
-  }
-  .env-at-title {
-    font-size: 38px;
-  }
+  .env-tiles-row { grid-template-columns: 1fr; }
+}
+
+.env-tiles-tile {
+  position: relative;
+  height: 600px;
+  overflow: hidden;
+  display: block;
+  color: white;
+}
+
+.env-tiles-tile-container {
+  height: 100%;
+  position: relative;
+  top: 0;
+  transition: transform 400ms ease-out;
+  width: 100%;
+}
+
+.env-tiles-tile:hover .env-tiles-tile-container {
+  transform: translateY(-12px);
+}
+
+.env-tiles-tile-background {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.env-tiles-tile-shadow {
+  background-color: rgba(0, 0, 0, 0.2);
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transition: background-color 400ms ease-out;
+  width: 100%;
+}
+
+.env-tiles-tile:hover .env-tiles-tile-shadow {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.env-tiles-tile-title {
+  position: absolute;
+  bottom: 32px;
+  left: 32px;
+  right: 32px;
+  font-size: 28px;
+  font-weight: 300;
+  z-index: 2;
+}
+
+/* ============================================================
+ * env-ts-member — Executive team grid (legacy-style cards with
+ * offset gray background block behind the portrait, green role label)
+ * ============================================================ */
+.env-ts-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 32px;
+}
+
+@media (max-width: 1023px) {
+  .env-ts-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 639px) {
+  .env-ts-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.env-ts-member {
+  text-align: left;
+}
+
+.env-ts-member-image {
+  position: relative;
+}
+
+.env-ts-member-image-bg {
+  background-color: var(--color-env-bg-light);
+  position: absolute;
+  left: 12px;
+  bottom: 0;
+  width: calc(100% - 12px);
+  height: calc(100% - 25px);
+  z-index: 0;
+}
+
+.env-ts-member-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.env-ts-member-name {
+  font-size: 21px;
+  font-weight: 600;
+  margin-top: 16px;
+  color: var(--color-env-dark-1);
+}
+
+.env-ts-member-position {
+  color: var(--color-env-green);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+ * env-quote-author — Ryan Pastor testimonial section
+ * Legacy uses right-aligned attribution on a light background.
+ * ============================================================ */
+.env-quote-section {
+  background: #ffffff;
+  padding-block: 96px;
+}
+
+.env-quote-body {
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 300;
+  line-height: 1.3;
+  color: var(--color-env-dark-1);
+  text-align: right;
+  max-width: 1100px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+.env-quote-author {
+  text-align: right;
+  max-width: 1100px;
+  margin: 32px auto 0;
+  padding-inline: 1.5rem;
+}
+
+.env-quote-author-name {
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--color-env-green);
+}
+
+.env-quote-author-role {
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  color: var(--color-env-dark-4);
+  text-transform: uppercase;
+  margin-top: 4px;
 }

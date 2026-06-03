@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { PortableText, type PortableTextBlock } from 'next-sanity'
 
-import { AnimatedTitle } from '@/components/AnimatedTitle'
 import { ContactForm } from '@/components/ContactForm'
 import { client } from '@/sanity/client'
 import { homePageQuery } from '@/sanity/queries'
@@ -82,17 +81,29 @@ const FALLBACK_SECTORS = [
 ]
 
 const FALLBACK_CAPABILITY_TILES = [
-  { title: 'Pre Construction', bg: '/uploads/2024/05/preconsteuction-bk.png', href: '/pre-construction' },
-  { title: 'Architectural Design', bg: '/uploads/2024/05/architectural-bk.png', href: '#' },
-  { title: 'Commercial Construction', bg: '/uploads/2024/05/commercial-bk.png', href: '#' },
+  {
+    title: 'Preconstruction Services',
+    bg: '/uploads/2024/05/preconsteuction-bk.png',
+    href: '/pre-construction',
+  },
+  {
+    title: 'Architectural Design',
+    bg: '/uploads/2024/05/architectural-bk.png',
+    href: '#',
+  },
+  {
+    title: 'Commercial Construction',
+    bg: '/uploads/2024/05/commercial-bk.png',
+    href: '#',
+  },
 ]
 
 const FALLBACK_TEAM = [
-  { name: 'Avi Reddy', photo: '/uploads/2024/06/Avi_Reddy.png' },
-  { name: 'Zach Walldorff', photo: '/uploads/2024/06/Zach_Walldorff.png' },
-  { name: 'David Epps', photo: '/uploads/2024/06/David_Epps.png' },
-  { name: 'Adam Meier', photo: '/uploads/2025/09/Adam-Meier.png' },
-  { name: 'Donald Hayes', photo: '/uploads/2025/12/Donald-Hayes.png' },
+  { name: 'Avi Reddy', photo: '/uploads/2024/06/Avi_Reddy.png', role: '' },
+  { name: 'Zach Walldorff', photo: '/uploads/2024/06/Zach_Walldorff.png', role: '' },
+  { name: 'David Epps', photo: '/uploads/2024/06/David_Epps.png', role: '' },
+  { name: 'Adam Meier', photo: '/uploads/2025/09/Adam-Meier.png', role: '' },
+  { name: 'Donald Hayes', photo: '/uploads/2025/12/Donald-Hayes.png', role: 'Operations Manager' },
 ]
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -120,20 +131,15 @@ export default async function HomePage() {
       ? page.teamMembers.map((m) => ({
           name: m.name ?? '',
           photo: m.photoUrl ?? '',
+          role: m.role ?? '',
         }))
       : FALLBACK_TEAM
 
   return (
     <>
-      {/* ============= TAGLINE BAND (fades in on initial load) ============= */}
-      <div className="env-tagline-band">BUILD WITH INTELLIGENCE.</div>
-
-      {/* ============= ANIMATED TITLE (own section, above the video) ============= */}
-      <section className="bg-white">
-        <AnimatedTitle
-          line1={page?.heroHeadingLine1 ?? 'Construction is broken.'}
-          line2={page?.heroHeadingLine2 ?? "We're fixing it."}
-        />
+      {/* ============= HERO — BUILD WITH INTELLIGENCE (fades in on load) ============= */}
+      <section className="env-hero-tagline">
+        <h1 className="env-hero-tagline-text">BUILD WITH INTELLIGENCE.</h1>
       </section>
 
       {/* ============= HERO VIDEO (separate section, full-bleed) ============= */}
@@ -187,9 +193,7 @@ export default async function HomePage() {
                 )}
                 <div className="p-5">
                   <h3 className="text-lg font-semibold text-env-green">{f.title}</h3>
-                  <p className="mt-2 text-sm text-neutral-700 leading-relaxed">
-                    {f.description}
-                  </p>
+                  <p className="mt-2 text-sm text-neutral-700 leading-relaxed">{f.description}</p>
                 </div>
               </article>
             ))}
@@ -197,67 +201,47 @@ export default async function HomePage() {
         )}
       </Section>
 
-      {/* ============= TESTIMONIAL — Ryan Pastor ============= */}
-      <section className="bg-env-bg-soft py-20 md:py-28">
-        <div className="env-container max-w-3xl text-center">
-          <blockquote className="text-2xl md:text-3xl font-light leading-snug text-env-dark-1">
-            &ldquo;The innovation tech stack Envision is building will
-            revolutionize the construction industry.&rdquo;
-          </blockquote>
-          <p className="mt-8 text-lg font-semibold text-env-green">Ryan Pastor</p>
-          <p className="text-sm uppercase tracking-wider text-neutral-600">
-            Manager, BuildingPoint SouthEast
-          </p>
+      {/* ============= TESTIMONIAL — Ryan Pastor (right-aligned, light bg) ============= */}
+      <section className="env-quote-section">
+        <blockquote className="env-quote-body">
+          &ldquo;The innovation tech stack Envision is building will revolutionize
+          the construction industry.&rdquo;
+        </blockquote>
+        <div className="env-quote-author">
+          <p className="env-quote-author-name">Ryan Pastor</p>
+          <p className="env-quote-author-role">Manager, BuildingPoint SouthEast</p>
         </div>
       </section>
 
-      {/* ============= CAPABILITIES (6 sector icons + 3 service tiles) ============= */}
+      {/* ============= CAPABILITIES (sectors + 3 photo tiles 600px tall) ============= */}
       <section id="expertise" className="bg-white py-20 md:py-28">
         <div className="env-container">
           <div className="max-w-3xl">
-            <p className="text-xs uppercase tracking-widest text-env-green">
-              Expertise
-            </p>
-            <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight">
-              Capabilities
-            </h2>
+            <p className="text-xs uppercase tracking-widest text-env-green">Expertise</p>
+            <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight">Capabilities</h2>
           </div>
 
-          {/* Sector icons grid */}
+          {/* Sector icons row */}
           <div className="mt-12 grid gap-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
             {sectors.map((s) => (
               <div key={s.name} className="text-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={s.iconPath}
-                  alt={s.name}
-                  className="mx-auto h-24 w-24 object-contain"
-                />
-                <p className="mt-3 text-sm font-medium text-neutral-800">
-                  {s.name}
-                </p>
+                <img src={s.iconPath} alt={s.name} className="mx-auto h-24 w-24 object-contain" />
+                <p className="mt-3 text-sm font-medium text-neutral-800">{s.name}</p>
               </div>
             ))}
           </div>
 
-          {/* Service tiles (photo-backgrounded cards) */}
-          <div className="mt-16 grid gap-6 md:grid-cols-3">
+          {/* Tall photo-backed tiles, 600px each */}
+          <div className="mt-16 env-tiles-row">
             {FALLBACK_CAPABILITY_TILES.map((tile) => (
-              <a
-                key={tile.title}
-                href={tile.href}
-                className="env-tiles-tile relative block aspect-[4/3] overflow-hidden rounded-lg group"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={tile.bg}
-                  alt=""
-                  className="env-tiles-tile-background absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-                <h3 className="absolute bottom-6 left-6 text-2xl font-light text-white">
-                  {tile.title}
-                </h3>
+              <a key={tile.title} href={tile.href} className="env-tiles-tile">
+                <div className="env-tiles-tile-container">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img className="env-tiles-tile-background" src={tile.bg} alt="" />
+                  <div className="env-tiles-tile-shadow" />
+                  <h3 className="env-tiles-tile-title">{tile.title}</h3>
+                </div>
               </a>
             ))}
           </div>
@@ -265,48 +249,37 @@ export default async function HomePage() {
       </section>
 
       {/* ============= EXECUTIVE TEAM ============= */}
-      <section id="people" className="bg-env-bg-light py-20 md:py-28">
+      <section id="people" className="bg-white py-20 md:py-28">
         <div className="env-container">
-          <div className="max-w-3xl text-center mx-auto">
-            <p className="text-xs uppercase tracking-widest text-env-green">
-              People
-            </p>
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="text-xs uppercase tracking-widest text-env-green">People</p>
             <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight">
               Meet Our Executive Team
             </h2>
           </div>
-          <div className="mt-12 grid gap-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+          <div className="env-ts-grid mt-12">
             {team.map((m) => (
-              <div key={m.name} className="text-center">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={m.photo}
-                  alt={m.name}
-                  className="mx-auto h-48 w-48 object-cover rounded-full"
-                />
-                <p className="mt-4 text-base font-semibold text-neutral-900">
-                  {m.name}
-                </p>
+              <div key={m.name} className="env-ts-member">
+                <div className="env-ts-member-image">
+                  <div className="env-ts-member-image-bg" />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={m.photo} alt={m.name} />
+                </div>
+                <p className="env-ts-member-name">{m.name}</p>
+                {m.role && <p className="env-ts-member-position">{m.role}</p>}
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ============= READY TO TALK? (contact form) ============= */}
-      <section id="contact-us" className="bg-env-dark-1 text-white py-20 md:py-28">
-        <div className="env-container max-w-3xl text-center">
-          <p className="text-xs uppercase tracking-widest text-env-accent">
-            {page?.contactEyebrow ?? 'Contact'}
-          </p>
-          <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight">
+      {/* ============= READY TO TALK? (contact form, light bg) ============= */}
+      <section id="contact-us" className="bg-env-bg-soft text-env-dark-1 py-20 md:py-28">
+        <div className="env-container max-w-3xl">
+          <h2 className="text-3xl md:text-5xl font-light tracking-tight">
             {page?.contactHeading ?? 'Ready to Talk?'}
           </h2>
-          <PortableTextOrFallback
-            value={page?.contactBody}
-            fallback=""
-            dark
-          />
+          <PortableTextOrFallback value={page?.contactBody} fallback="" />
           <div className="mt-12">
             <ContactForm />
           </div>
@@ -335,23 +308,17 @@ function Section({
   dark?: boolean
   children?: React.ReactNode
 }) {
-  const tone = dark
-    ? 'bg-env-dark-1 text-white'
-    : 'bg-white text-env-dark-1'
+  const tone = dark ? 'bg-env-dark-1 text-white' : 'bg-white text-env-dark-1'
   return (
     <section id={id} className={`${tone} py-20 md:py-28`}>
       <div className="env-container">
         {(eyebrow || heading) && (
           <div className="max-w-3xl">
             {eyebrow && (
-              <p className="text-xs uppercase tracking-widest text-env-green">
-                {eyebrow}
-              </p>
+              <p className="text-xs uppercase tracking-widest text-env-green">{eyebrow}</p>
             )}
             {heading && (
-              <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight">
-                {heading}
-              </h2>
+              <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight">{heading}</h2>
             )}
           </div>
         )}
@@ -378,7 +345,9 @@ function PortableTextOrFallback({
 }) {
   const className = dark ? 'text-neutral-200' : 'text-neutral-700'
   if (!value || value.length === 0) {
-    return fallback ? <p className={`text-base leading-relaxed ${className}`}>{fallback}</p> : null
+    return fallback ? (
+      <p className={`text-base leading-relaxed ${className}`}>{fallback}</p>
+    ) : null
   }
   return (
     <div className={`text-base leading-relaxed ${className}`}>
