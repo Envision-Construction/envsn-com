@@ -1,6 +1,12 @@
 'use client'
 
-import { useActionState, useEffect, useRef, useState } from 'react'
+import {
+  useActionState,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
 
 import { submitContact, type ContactState } from '@/app/actions/contact'
 
@@ -15,10 +21,7 @@ declare global {
   }
 }
 
-/**
- * Format US phone: strip non-digits, render (XXX) XXX-XXXX as the user types.
- * Caps at 10 digits.
- */
+/** Format US phone: (XXX) XXX-XXXX. Caps at 10 digits. */
 function formatPhone(raw: string): string {
   const digits = raw.replace(/\D/g, '').slice(0, 10)
   if (digits.length === 0) return ''
@@ -27,12 +30,36 @@ function formatPhone(raw: string): string {
   return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`
 }
 
+/** Walk the formatted string to find the position that follows
+ *  the same number of digits as the cursor's original position. */
+function cursorPositionAfterFormat(
+  formatted: string,
+  digitsBeforeCursor: number,
+): number {
+  if (digitsBeforeCursor === 0) {
+    // After the leading "(" if any digits will follow
+    return formatted.startsWith('(') ? 1 : 0
+  }
+  let pos = 0
+  let digitCount = 0
+  for (let i = 0; i < formatted.length; i++) {
+    pos = i + 1
+    if (/\d/.test(formatted[i])) {
+      digitCount++
+      if (digitCount === digitsBeforeCursor) break
+    }
+  }
+  return pos
+}
+
 export function ContactForm() {
   const [state, formAction, isPending] = useActionState(
     submitContact,
     initialState,
   )
   const formRef = useRef<HTMLFormElement>(null)
+  const phoneRef = useRef<HTMLInputElement>(null)
+  const pendingCursor = useRef<number | null>(null)
   const [phone, setPhone] = useState('')
   const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
 
@@ -45,6 +72,27 @@ export function ContactForm() {
       setPhone('')
     }
   }, [state])
+
+  // Restore caret position after React re-renders the formatted phone value
+  useLayoutEffect(() => {
+    if (pendingCursor.current != null && phoneRef.current) {
+      const pos = pendingCursor.current
+      phoneRef.current.setSelectionRange(pos, pos)
+      pendingCursor.current = null
+    }
+  }, [phone])
+
+  const onPhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target
+    const rawValue = input.value
+    const cursorRaw = input.selectionStart ?? rawValue.length
+    const digitsBeforeCursor = rawValue
+      .slice(0, cursorRaw)
+      .replace(/\D/g, '').length
+    const formatted = formatPhone(rawValue)
+    pendingCursor.current = cursorPositionAfterFormat(formatted, digitsBeforeCursor)
+    setPhone(formatted)
+  }
 
   const fieldError = (k: string) =>
     state.status === 'error' ? state.fieldErrors?.[k] : undefined
@@ -87,16 +135,19 @@ export function ContactForm() {
             Phone
           </label>
           <input
+            ref={phoneRef}
             id="phone"
             name="phone"
             type="tel"
             inputMode="numeric"
             autoComplete="tel"
             value={phone}
-            onChange={(e) => setPhone(formatPhone(e.target.value))}
+            onChange={onPhoneChange}
             placeholder="(555) 555-5555"
+            pattern="^\(\d{3}\) \d{3}-\d{4}$"
+            title="Phone must be (XXX) XXX-XXXX"
             maxLength={14}
-            className="mt-1.5 block w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-env-green focus:ring-1 focus:ring-env-green outline-none"
+            className="env-form-field mt-1.5 block w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-env-green focus:ring-1 focus:ring-env-green outline-none"
           />
           {fieldError('phone') && (
             <p className="mt-1 text-xs text-red-600">{fieldError('phone')}</p>
@@ -112,9 +163,10 @@ export function ContactForm() {
             type="email"
             required
             autoComplete="email"
+            placeholder="name@example.com"
             pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
             title="Please include @ and a domain ending (e.g. name@example.com)"
-            className="mt-1.5 block w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-env-green focus:ring-1 focus:ring-env-green outline-none"
+            className="env-form-field mt-1.5 block w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-env-green focus:ring-1 focus:ring-env-green outline-none"
           />
           {fieldError('email') && (
             <p className="mt-1 text-xs text-red-600">{fieldError('email')}</p>
@@ -254,7 +306,8 @@ function Field({
         type={type}
         required={required}
         autoComplete={autoComplete}
-        className="mt-1.5 block w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-env-green focus:ring-1 focus:ring-env-green outline-none"
+        placeholder=" "
+        className="env-form-field mt-1.5 block w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-env-green focus:ring-1 focus:ring-env-green outline-none"
       />
       {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
     </div>

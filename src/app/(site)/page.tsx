@@ -4,6 +4,7 @@ import { PortableText, type PortableTextBlock } from 'next-sanity'
 import { CapabilitiesSection } from '@/components/CapabilitiesSection'
 import { ContactForm } from '@/components/ContactForm'
 import { ExecutiveTeam } from '@/components/ExecutiveTeam'
+import { TechnologyCarousel } from '@/components/TechnologyCarousel'
 import { client } from '@/sanity/client'
 import { homePageQuery } from '@/sanity/queries'
 
@@ -20,14 +21,6 @@ type Sector = {
   name?: string
   description?: string
   iconUrl?: string
-  order?: number
-}
-
-type TeamMember = {
-  _id: string
-  name?: string
-  role?: string
-  photoUrl?: string
   order?: number
 }
 
@@ -54,8 +47,6 @@ type HomePage = {
   sectors?: Sector[]
   peopleEyebrow?: string
   peopleHeading?: string
-  peopleBody?: PortableTextBlock[]
-  teamMembers?: TeamMember[]
   contactEyebrow?: string
   contactHeading?: string
   contactBody?: PortableTextBlock[]
@@ -97,9 +88,15 @@ export default async function HomePage() {
         }))
       : FALLBACK_SECTORS
 
+  const technologyFeatures = page?.technologyFeatures?.map((f) => ({
+    title: f.title ?? '',
+    description: f.description ?? '',
+    imageUrl: f.imageUrl ?? '',
+  }))
+
   return (
     <>
-      {/* ============= HERO — BUILD WITH INTELLIGENCE. (left-aligned, fade-in) ============= */}
+      {/* ============= HERO — BUILD WITH INTELLIGENCE. ============= */}
       <section className="env-hero-tagline">
         <h1 className="env-hero-tagline-text">
           <span className="env-hero-tagline-outline">BUILD WITH </span>
@@ -107,7 +104,7 @@ export default async function HomePage() {
         </h1>
       </section>
 
-      {/* ============= HERO VIDEO (separate section, full-bleed) ============= */}
+      {/* ============= HERO VIDEO ============= */}
       <section className="env-video-section relative w-full overflow-hidden bg-env-dark-1">
         <video
           autoPlay
@@ -124,54 +121,47 @@ export default async function HomePage() {
         </video>
       </section>
 
-      {/* ============= ABOUT ============= */}
-      <Section
+      {/* ============= ABOUT (image+text split) ============= */}
+      <CultureSection
         id="culture"
         eyebrow={page?.aboutEyebrow ?? 'Culture'}
         heading={page?.aboutHeading ?? 'About Us'}
         image={page?.aboutImageUrl}
-      >
-        <PortableTextOrFallback value={page?.aboutBody} fallback="" />
-      </Section>
+        body={page?.aboutBody}
+      />
 
-      {/* ============= DIVERSITY ============= */}
-      <Section
+      {/* ============= DIVERSITY (image+text split) ============= */}
+      <CultureSection
         eyebrow={page?.diversityEyebrow ?? 'Culture'}
         heading={page?.diversityHeading ?? 'Diversity'}
         image={page?.diversityImageUrl ?? '/uploads/2024/05/culture-diversity-f.png'}
-      >
-        <PortableTextOrFallback value={page?.diversityBody} fallback="" />
-      </Section>
+        body={page?.diversityBody}
+      />
 
-      {/* ============= TECHNOLOGY ============= */}
-      <Section
-        eyebrow={page?.technologyEyebrow ?? 'Culture'}
-        heading={page?.technologyHeading ?? 'Technology'}
-      >
-        <PortableTextOrFallback value={page?.technologyBody} fallback="" />
-        {page?.technologyFeatures && page.technologyFeatures.length > 0 && (
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
-            {page.technologyFeatures.map((f, i) => (
-              <article key={i} className="rounded-lg overflow-hidden bg-white shadow-sm border border-neutral-200">
-                {f.imageUrl && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={f.imageUrl} alt={f.title ?? ''} className="w-full h-48 object-cover" />
-                )}
-                <div className="p-5">
-                  <h3 className="text-lg font-semibold text-env-green">{f.title}</h3>
-                  <p className="mt-2 text-sm text-neutral-700 leading-relaxed">{f.description}</p>
-                </div>
-              </article>
-            ))}
+      {/* ============= TECHNOLOGY (carousel) ============= */}
+      <section className="bg-white py-20 md:py-28">
+        <div className="env-container">
+          <div className="env-section-head">
+            <p className="env-eyebrow">{page?.technologyEyebrow ?? 'Culture'}</p>
+            <h2>{page?.technologyHeading ?? 'Technology'}</h2>
           </div>
-        )}
-      </Section>
+          <div className="env-section-body">
+            <PortableTextOrFallback value={page?.technologyBody} fallback="" />
+          </div>
+          <div className="mt-10 bg-env-dark-1 rounded-lg p-4 md:p-6">
+            <TechnologyCarousel features={technologyFeatures} />
+          </div>
+        </div>
+      </section>
 
-      {/* ============= TESTIMONIAL — Ryan Pastor (right-aligned, light bg) ============= */}
+      {/* ============= TESTIMONIAL — Ryan Pastor ============= */}
       <section className="env-quote-section">
         <blockquote className="env-quote-body">
-          &ldquo;The innovation tech stack Envision is building will revolutionize
-          the construction industry.&rdquo;
+          &ldquo;The innovation tech stack Envision is building{' '}
+          <span className="env-quote-emphasis">
+            will revolutionize the construction industry.
+          </span>
+          &rdquo;
         </blockquote>
         <div className="env-quote-author">
           <p className="env-quote-author-name">Ryan Pastor</p>
@@ -179,15 +169,14 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ============= CAPABILITIES (sectors + 3 photo tiles + LiDAR detail) ============= */}
+      {/* ============= CAPABILITIES ============= */}
       <section id="expertise" className="bg-white py-20 md:py-28">
         <div className="env-container">
-          <div className="max-w-3xl">
-            <p className="text-xs uppercase tracking-widest text-env-green">Expertise</p>
-            <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight">Capabilities</h2>
+          <div className="env-section-head">
+            <p className="env-eyebrow">Expertise</p>
+            <h2>Capabilities</h2>
           </div>
 
-          {/* Sector icons row */}
           <div className="mt-12 grid gap-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
             {sectors.map((s) => (
               <div key={s.name} className="text-center">
@@ -198,21 +187,18 @@ export default async function HomePage() {
             ))}
           </div>
 
-          {/* Three 600px tiles with hover interactions + LiDAR detail expansion */}
           <div className="mt-16">
             <CapabilitiesSection />
           </div>
         </div>
       </section>
 
-      {/* ============= EXECUTIVE TEAM (carousel, 3-at-a-time) ============= */}
+      {/* ============= EXECUTIVE TEAM ============= */}
       <section id="people" className="bg-white py-20 md:py-28">
         <div className="env-container">
-          <div className="max-w-3xl mx-auto text-center">
-            <p className="text-xs uppercase tracking-widest text-env-green">People</p>
-            <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight">
-              Meet Our Executive Team
-            </h2>
+          <div className="env-section-head text-center mx-auto">
+            <p className="env-eyebrow">People</p>
+            <h2>Meet Our Executive Team</h2>
           </div>
           <div className="mt-12">
             <ExecutiveTeam />
@@ -220,7 +206,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ============= READY TO TALK? (centered, light bg) ============= */}
+      {/* ============= READY TO TALK? ============= */}
       <section id="contact-us" className="bg-env-bg-soft text-env-dark-1 py-20 md:py-28">
         <div className="env-container max-w-2xl mx-auto text-center">
           <h2 className="text-3xl md:text-5xl font-light tracking-tight">
@@ -239,40 +225,34 @@ export default async function HomePage() {
 }
 
 /* ============================================================
- * Local helpers
+ * CultureSection — image+text split with tighter spacing,
+ * larger image column, and the new env-eyebrow / env-section-head /
+ * env-section-split classes from globals.css.
  * ============================================================ */
-
-function Section({
+function CultureSection({
   id,
   eyebrow,
   heading,
   image,
-  dark = false,
-  children,
+  body,
 }: {
   id?: string
-  eyebrow?: string
-  heading?: string
+  eyebrow: string
+  heading: string
   image?: string
-  dark?: boolean
-  children?: React.ReactNode
+  body?: PortableTextBlock[]
 }) {
-  const tone = dark ? 'bg-env-dark-1 text-white' : 'bg-white text-env-dark-1'
   return (
-    <section id={id} className={`${tone} py-20 md:py-28`}>
+    <section id={id} className="bg-white py-20 md:py-28">
       <div className="env-container">
-        {(eyebrow || heading) && (
-          <div className="max-w-3xl">
-            {eyebrow && (
-              <p className="text-xs uppercase tracking-widest text-env-green">{eyebrow}</p>
-            )}
-            {heading && (
-              <h2 className="mt-3 text-3xl md:text-5xl font-light tracking-tight">{heading}</h2>
-            )}
+        <div className="env-section-head">
+          <p className="env-eyebrow">{eyebrow}</p>
+          <h2>{heading}</h2>
+        </div>
+        <div className={image ? 'env-section-body env-section-split' : 'env-section-body'}>
+          <div className="text-base leading-relaxed text-neutral-700">
+            <PortableTextOrFallback value={body} fallback="" />
           </div>
-        )}
-        <div className={`mt-8 ${image ? 'grid md:grid-cols-2 gap-12 items-center' : ''}`}>
-          <div className="prose max-w-none">{children}</div>
           {image && (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={image} alt="" className="w-full rounded-lg object-cover" />
@@ -286,20 +266,17 @@ function Section({
 function PortableTextOrFallback({
   value,
   fallback,
-  dark = false,
 }: {
   value?: PortableTextBlock[]
   fallback?: string
-  dark?: boolean
 }) {
-  const className = dark ? 'text-neutral-200' : 'text-neutral-700'
   if (!value || value.length === 0) {
     return fallback ? (
-      <p className={`text-base leading-relaxed ${className}`}>{fallback}</p>
+      <p className="text-base leading-relaxed text-neutral-700">{fallback}</p>
     ) : null
   }
   return (
-    <div className={`text-base leading-relaxed ${className}`}>
+    <div className="text-base leading-relaxed text-neutral-700">
       <PortableText value={value} />
     </div>
   )
