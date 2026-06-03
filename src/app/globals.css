@@ -1,26 +1,85 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ============================================================
+ * envsn.com — design tokens
+ * ----
+ * Extracted from the legacy HSS-hosted Divi build to support
+ * a 1:1 visual replica. Do not refresh to the 2026 Envision
+ * Brand Standard here — that is a separate, future project.
+ *
+ * Primary brand green: #016d4a (env-green utility class)
+ * Variants in legacy CSS: #006e47, #007853
+ * Accent light-green: #d2eb8e (used sparingly)
+ * Type stack: Montserrat (heading + body), Open Sans (fallback / chrome)
+ * ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Colors — env-* mirrors the legacy CSS class names */
+  --color-env-green: #016d4a;
+  --color-env-green-dark: #006e47;
+  --color-env-green-mid: #007853;
+  --color-env-green-light: #abde71;
+  --color-env-accent: #d2eb8e;
+  --color-env-dark-1: #231f20;
+  --color-env-dark-2: #2d3940;
+  --color-env-dark-3: #312b2d;
+  --color-env-dark-4: #3e3e3e;
+  --color-env-gray: #d3d3d3;
+  --color-env-bg-soft: #f7f7f7;
+  --color-env-bg-light: #efefef;
+
+  /* Fonts */
+  --font-sans: 'Montserrat', Helvetica, Arial, sans-serif;
+  --font-body: 'Open Sans', Arial, sans-serif;
+
+  /* Type scale — derived from legacy CSS audit (11px → 96px range) */
+  --text-display-xl: 96px;
+  --text-display-lg: 50px;
+  --text-display: 40px;
+  --text-h1: 36px;
+  --text-h2: 32px;
+  --text-h3: 26px;
+  --text-h4: 22px;
+  --text-h5: 20px;
+  --text-h6: 18px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #ffffff;
+  --foreground: #231f20;
+}
+
+/* Legacy site has no dark mode — explicitly opt out so the replica
+ * doesn't invert on a user's preferred OS scheme. */
+
+html {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Legacy utility classes (mirror env-* from the Divi child theme) */
+.env-green {
+  color: var(--color-env-green);
+}
+
+.env-bold {
+  font-weight: 700;
+}
+
+.env-container {
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
 }
