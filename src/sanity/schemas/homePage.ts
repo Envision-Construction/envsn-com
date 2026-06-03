@@ -62,6 +62,13 @@ export const homePage = defineType({
       of: [{ type: 'block' }],
       group: 'about',
     }),
+    defineField({
+      name: 'aboutImage',
+      title: 'Image',
+      type: 'image',
+      options: { hotspot: true },
+      group: 'about',
+    }),
 
     // ---------- Diversity ----------
     defineField({

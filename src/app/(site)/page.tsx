@@ -39,6 +39,7 @@ type HomePage = {
   aboutEyebrow?: string
   aboutHeading?: string
   aboutBody?: PortableTextBlock[]
+  aboutImageUrl?: string
   diversityEyebrow?: string
   diversityHeading?: string
   diversityBody?: PortableTextBlock[]
@@ -128,6 +129,7 @@ export default async function HomePage() {
         id="culture"
         eyebrow={page?.aboutEyebrow ?? 'Culture'}
         heading={page?.aboutHeading ?? 'About Us'}
+        image={page?.aboutImageUrl}
       >
         <PortableTextOrFallback value={page?.aboutBody} fallback="" />
       </Section>

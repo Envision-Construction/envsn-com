@@ -26,6 +26,7 @@ export const homePageQuery = /* groq */ `
     "heroVideoUrl": heroVideo.asset->url,
     "heroPosterUrl": heroPosterImage.asset->url,
     aboutEyebrow, aboutHeading, aboutBody,
+    "aboutImageUrl": aboutImage.asset->url,
     diversityEyebrow, diversityHeading, diversityBody,
     "diversityImageUrl": diversityImage.asset->url,
     technologyEyebrow, technologyHeading, technologyBody,
