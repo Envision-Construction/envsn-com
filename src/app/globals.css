@@ -125,6 +125,14 @@ body {
   padding-inline: 1.5rem;
 }
 
+/* Wrapper used by <HeroTagline> client component. The JS sets transform
+ * each scroll frame to keep the inner h1 visually centered in the
+ * visible portion of the white section (between the navbar and the
+ * video). No CSS transition — RAF handles the smoothing. */
+.env-hero-tagline-tracker {
+  will-change: transform;
+}
+
 .env-hero-tagline-text {
   font-weight: 800;
   letter-spacing: 0.01em;

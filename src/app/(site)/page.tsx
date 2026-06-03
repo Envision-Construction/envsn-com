@@ -4,6 +4,7 @@ import { PortableText, type PortableTextBlock } from 'next-sanity'
 import { CapabilitiesSection } from '@/components/CapabilitiesSection'
 import { ContactForm } from '@/components/ContactForm'
 import { ExecutiveTeam } from '@/components/ExecutiveTeam'
+import { HeroTagline } from '@/components/HeroTagline'
 import { ScrollFade } from '@/components/ScrollFade'
 import { TechnologyCarousel } from '@/components/TechnologyCarousel'
 import { client } from '@/sanity/client'
@@ -97,13 +98,8 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* ============= HERO — BUILD WITH INTELLIGENCE. ============= */}
-      <section className="env-hero-tagline">
-        <h1 className="env-hero-tagline-text">
-          <span className="env-hero-tagline-outline">BUILD WITH </span>
-          <span className="env-hero-tagline-solid">INTELLIGENCE.</span>
-        </h1>
-      </section>
+      {/* ============= HERO — BUILD WITH INTELLIGENCE. (scroll-centered) ============= */}
+      <HeroTagline />
 
       {/* ============= HERO VIDEO ============= */}
       <section className="env-video-section relative w-full overflow-hidden bg-env-dark-1">
