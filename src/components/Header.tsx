@@ -58,20 +58,24 @@ export function Header() {
   return (
     <>
       <header className="env-header sticky top-0 z-40 w-full bg-white/95 backdrop-blur border-b border-neutral-200">
-        <div className="env-header-container mx-auto max-w-[1520px] flex items-center justify-between px-6 h-[60px]">
-          {/* Left group — logo + nav clustered together (was logo-left, nav-centered) */}
-          <div className="flex items-center gap-12">
-            <Link href="/" aria-label="Envision Construction — Home" className="env-header-logo flex-shrink-0">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/uploads/2024/05/logo-black_prime.png"
-                alt="Envision Construction"
-                className="h-8 w-auto"
-              />
-            </Link>
+        <div className="env-header-container mx-auto max-w-[1520px] grid grid-cols-[1fr_auto_1fr] items-center px-6 h-[60px]">
+          {/* Column 1 — logo, right-aligned in its column so it sits close to the centered nav */}
+          <Link
+            href="/"
+            aria-label="Envision Construction — Home"
+            className="env-header-logo flex-shrink-0 justify-self-end mr-12"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/uploads/2024/05/logo-black_prime.png"
+              alt="Envision Construction"
+              className="h-8 w-auto"
+            />
+          </Link>
 
-            <nav className="env-header-menu hidden md:flex items-center gap-8">
-              {NAV.map((item) => {
+          {/* Column 2 — nav, auto-width and sits perfectly centered on the page */}
+          <nav className="env-header-menu hidden md:flex items-center gap-8">
+            {NAV.map((item) => {
               const isActive = activeLabel === item.label
               const className = `env-header-link text-sm uppercase tracking-wider text-neutral-800 hover:text-env-green transition-colors ${
                 isActive ? 'env-header-link--active' : ''
@@ -101,10 +105,10 @@ export function Header() {
                 </Link>
               )
             })}
-            </nav>
-          </div>
+          </nav>
 
-          <div className="env-header-menu-right flex items-center gap-3">
+          {/* Column 3 — Contact Us + search, right-aligned in its column */}
+          <div className="env-header-menu-right flex items-center gap-3 justify-self-end">
             <Link
               href="/#contact-us"
               className="rounded-full bg-env-green text-white text-sm font-semibold uppercase tracking-wider px-5 py-2.5 hover:bg-env-green-dark transition-colors"
