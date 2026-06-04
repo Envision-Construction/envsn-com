@@ -13,9 +13,15 @@ import { z } from 'zod'
  *
  * Env vars required for the action to actually send:
  *   - RESEND_API_KEY
- *   - LEADS_EMAIL_TO
+ *   - LEADS_EMAIL_TO (default destination)
  *   - LEADS_EMAIL_FROM (must be on a verified Resend domain)
  *   - TURNSTILE_SECRET_KEY
+ *
+ * Optional per-source overrides — when set, submissions from that form
+ * use these instead of the defaults. Suffix matches the `source` value
+ * uppercased and stripped of non-alphanumerics:
+ *   - LEADS_EMAIL_TO_PRECONSTRUCTION       / LEADS_EMAIL_FROM_PRECONSTRUCTION
+ *   - LEADS_EMAIL_TO_CONSTRUCTION          / LEADS_EMAIL_FROM_CONSTRUCTION
  */
 
 const ContactSchema = z.object({
@@ -110,8 +116,14 @@ export async function submitContact(
   }
 
   const apiKey = process.env.RESEND_API_KEY
-  const to = process.env.LEADS_EMAIL_TO
-  const from = process.env.LEADS_EMAIL_FROM
+  // Per-source overrides: LEADS_EMAIL_TO_<SOURCE> / LEADS_EMAIL_FROM_<SOURCE>
+  // fall back to the defaults when unset.
+  const sourceKey = formSource.toUpperCase().replace(/[^A-Z0-9]/g, '')
+  const to =
+    process.env[`LEADS_EMAIL_TO_${sourceKey}`] || process.env.LEADS_EMAIL_TO
+  const from =
+    process.env[`LEADS_EMAIL_FROM_${sourceKey}`] ||
+    process.env.LEADS_EMAIL_FROM
   if (!apiKey || !to || !from) {
     return {
       status: 'error',
