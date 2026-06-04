@@ -107,21 +107,35 @@ export async function submitContact(
   }
 
   const fullName = `${firstName} ${lastName}`.trim()
+  const subject = `New inquiry from ${fullName}${company ? ` (${company})` : ''}`
+
   const resend = new Resend(apiKey)
   const { error } = await resend.emails.send({
     from,
     to,
     replyTo: email,
-    subject: `New contact form submission — ${fullName}`,
+    subject,
     text: [
+      `New inquiry from envsn.com`,
+      ``,
       `Name:    ${fullName}`,
       `Email:   ${email}`,
       `Phone:   ${phone || '(not provided)'}`,
       `Company: ${company || '(not provided)'}`,
       '',
-      'How can we help you?',
+      'Message:',
       message,
+      '',
+      '— envsn.com',
     ].join('\n'),
+    html: renderInquiryHtml({
+      fullName,
+      firstName,
+      email,
+      phone: phone || '',
+      company: company || '',
+      message,
+    }),
   })
 
   if (error) {
@@ -135,4 +149,151 @@ export async function submitContact(
     status: 'success',
     message: 'Thanks — we received your message and will reach out shortly.',
   }
+}
+
+// ---------------------------------------------------------------------------
+// Branded HTML email — follows the Envision 2026 brand standard (Email surface):
+// White 600px canvas, Helvetica Neue web stack, black body, brand green
+// #007A53 for the single accent, grey #929296 footer, no background floods.
+// Logo absolute URL so it loads in any recipient client. Table-based layout
+// for maximum email-client compatibility (Outlook, Gmail, Apple Mail).
+// ---------------------------------------------------------------------------
+
+const ENVISION_GREEN = '#007A53'
+const ENVISION_DARK = '#111111'
+const ENVISION_GREY = '#929296'
+const ENVISION_LIGHT_GREY = '#E6E6E6'
+const ENVISION_FONT =
+  "'Helvetica Neue', Helvetica, Arial, sans-serif"
+
+const LOGO_URL =
+  process.env.NEXT_PUBLIC_SITE_URL
+    ? `${process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')}/uploads/2024/05/logo-black_prime.png`
+    : 'https://envsn.com/uploads/2024/05/logo-black_prime.png'
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+function detailRow(label: string, value: string): string {
+  return `
+    <tr>
+      <td style="padding:8px 0;border-bottom:1px solid ${ENVISION_LIGHT_GREY};vertical-align:top;width:96px;">
+        <span style="font-family:${ENVISION_FONT};font-size:11px;font-weight:500;line-height:1.5;color:${ENVISION_GREY};text-transform:uppercase;letter-spacing:0.08em;">${label}</span>
+      </td>
+      <td style="padding:8px 0;border-bottom:1px solid ${ENVISION_LIGHT_GREY};vertical-align:top;">
+        <span style="font-family:${ENVISION_FONT};font-size:15px;font-weight:400;line-height:1.5;color:${ENVISION_DARK};">${value}</span>
+      </td>
+    </tr>`
+}
+
+function renderInquiryHtml(d: {
+  fullName: string
+  firstName: string
+  email: string
+  phone: string
+  company: string
+  message: string
+}): string {
+  const phoneCell = d.phone
+    ? escapeHtml(d.phone)
+    : `<span style="color:${ENVISION_GREY};">Not provided</span>`
+  const companyCell = d.company
+    ? escapeHtml(d.company)
+    : `<span style="color:${ENVISION_GREY};">Not provided</span>`
+  const emailCell = `<a href="mailto:${escapeHtml(d.email)}" style="color:${ENVISION_GREEN};text-decoration:none;">${escapeHtml(d.email)}</a>`
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>New inquiry from envsn.com</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f4f4;font-family:${ENVISION_FONT};">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f4f4f4;">
+  <tr>
+    <td align="center" style="padding:32px 16px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="background:#ffffff;max-width:600px;width:100%;">
+
+        <tr>
+          <td style="padding:32px 40px 8px;">
+            <img src="${LOGO_URL}" alt="ENVISION" width="160" style="display:block;border:0;outline:0;height:auto;max-width:160px;">
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:0 40px;">
+            <div style="height:2px;width:48px;background:${ENVISION_GREEN};line-height:2px;font-size:0;">&nbsp;</div>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:20px 40px 8px;">
+            <h1 style="margin:0;font-family:${ENVISION_FONT};font-size:22px;font-weight:700;line-height:1.2;color:${ENVISION_DARK};letter-spacing:-0.01em;">
+              New inquiry from ${escapeHtml(d.fullName)}
+            </h1>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:0 40px 20px;">
+            <p style="margin:0;font-family:${ENVISION_FONT};font-size:15px;line-height:1.5;color:${ENVISION_DARK};">
+              ${escapeHtml(d.firstName)} reached out through the envsn.com contact form.
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:0 40px 8px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+              ${detailRow('Name', escapeHtml(d.fullName))}
+              ${detailRow('Email', emailCell)}
+              ${detailRow('Phone', phoneCell)}
+              ${detailRow('Company', companyCell)}
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:24px 40px 8px;">
+            <p style="margin:0 0 10px;font-family:${ENVISION_FONT};font-size:11px;font-weight:500;line-height:1.5;color:${ENVISION_GREY};text-transform:uppercase;letter-spacing:0.08em;">
+              Message
+            </p>
+            <div style="padding:18px 20px;background:${ENVISION_LIGHT_GREY};border-left:3px solid ${ENVISION_GREEN};">
+              <p style="margin:0;font-family:${ENVISION_FONT};font-size:15px;line-height:1.65;color:${ENVISION_DARK};white-space:pre-wrap;">${escapeHtml(d.message)}</p>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:24px 40px 8px;">
+            <a href="mailto:${escapeHtml(d.email)}" style="display:inline-block;padding:12px 22px;background:${ENVISION_GREEN};color:#ffffff;font-family:${ENVISION_FONT};font-size:12px;font-weight:700;line-height:1;text-decoration:none;text-transform:uppercase;letter-spacing:0.1em;">
+              Reply to ${escapeHtml(d.firstName)}
+            </a>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:32px 40px;border-top:1px solid ${ENVISION_LIGHT_GREY};margin-top:24px;">
+            <p style="margin:0;font-family:${ENVISION_FONT};font-size:12px;line-height:1.6;color:${ENVISION_GREY};">
+              <a href="https://envsn.com" style="color:${ENVISION_GREEN};text-decoration:none;font-weight:500;">envsn.com</a><br>
+              Envision Construction<br>
+              8601 Dunwoody Pl, Suite 200<br>
+              Sandy Springs, GA 30350
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>`
 }
