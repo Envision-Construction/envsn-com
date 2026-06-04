@@ -175,7 +175,7 @@ export default async function PreConstructionPage() {
             </div>
           )}
           <div className="mt-12 flex justify-center">
-            <ContactForm />
+            <ContactForm messageLabel="What services are you interested in?" />
           </div>
         </div>
       </section>

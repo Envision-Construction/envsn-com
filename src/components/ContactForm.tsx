@@ -52,7 +52,11 @@ function cursorPositionAfterFormat(
   return pos
 }
 
-export function ContactForm() {
+export function ContactForm({
+  messageLabel = 'How can we help you?',
+}: {
+  messageLabel?: string
+} = {}) {
   const [state, formAction, isPending] = useActionState(
     submitContact,
     initialState,
@@ -183,7 +187,7 @@ export function ContactForm() {
 
       <div>
         <label htmlFor="message" className="block text-xs uppercase tracking-widest text-neutral-700">
-          How can we help you? *
+          {messageLabel} *
         </label>
         <textarea
           id="message"

@@ -70,7 +70,6 @@ export function Header() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={className}
-                    onClick={() => setClickedNav(item.label)}
                   >
                     {item.label}
                   </a>
