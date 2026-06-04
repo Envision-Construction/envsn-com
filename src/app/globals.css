@@ -781,13 +781,43 @@ body {
   overflow: hidden;
   border: 0;
   padding: 0;
-  cursor: pointer;
   display: block;
   background: #000;
+  scroll-margin-top: 60px;
+  transition: height 550ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .env-precon-card + .env-precon-card {
   border-top: 2px solid #000;
+}
+
+/* Expanded — fills the viewport minus the 60px sticky navbar */
+.env-precon-card--open {
+  height: calc(100vh - 60px);
+  min-height: 600px;
+}
+
+/* Collapsed — sibling cards squish to 0 when a peer opens */
+.env-precon-card--collapsed {
+  height: 0;
+  border-top-width: 0;
+}
+
+/* Click-anywhere target — fills the panel at rest, disabled when open */
+.env-precon-card-hit {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.env-precon-card--open .env-precon-card-hit {
+  cursor: default;
+  pointer-events: none;
 }
 
 .env-precon-card-video {
@@ -802,11 +832,16 @@ body {
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0.5) 100%);
-  transition: background 250ms ease;
+  transition: background 300ms ease;
 }
 
-.env-precon-card:hover .env-precon-card-overlay {
+.env-precon-card:not(.env-precon-card--open):hover .env-precon-card-overlay {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.35) 100%);
+}
+
+/* Slightly heavier overlay when expanded so the white copy stays legible */
+.env-precon-card--open .env-precon-card-overlay {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.55) 100%);
 }
 
 .env-precon-card-title {
@@ -824,34 +859,63 @@ body {
   text-align: center;
   padding: 0 24px;
   pointer-events: none;
+  z-index: 3;
+  opacity: 1;
+  transition: opacity 250ms ease;
 }
 
-@media (max-width: 767px) {
-  .env-precon-card { height: 260px; }
+.env-precon-card--open .env-precon-card-title {
+  opacity: 0;
 }
 
-/* Fullscreen overlay — anchored below the 60px sticky navbar. Width
- * and height are locked (not right/bottom: 0) so the JS-driven
- * transform: scale() math is correct. */
-.env-precon-fullscreen {
-  position: fixed;
-  top: 60px;
-  left: 0;
-  width: 100vw;
-  height: calc(100vh - 60px);
-  background: #000;
-  z-index: 50;
-  overflow: hidden;
-  will-change: transform;
+/* Heading + body overlay shown only when the card is open */
+.env-precon-card-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px clamp(32px, 8vw, 120px);
+  color: white;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 350ms ease 150ms, transform 350ms ease 150ms;
 }
 
-.env-precon-fullscreen-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  background: #000;
+.env-precon-card--open .env-precon-card-content {
+  opacity: 1;
+  transform: translateY(0);
 }
 
+.env-precon-card-heading {
+  font-size: clamp(40px, 5.6vw, 80px);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: white;
+  margin: 0;
+}
+
+.env-precon-card-heading strong {
+  font-weight: 700;
+}
+
+.env-precon-card-body {
+  margin-top: 28px;
+  max-width: 760px;
+  font-size: clamp(15px, 1.1vw, 17px);
+  line-height: 1.65;
+  font-weight: 600;
+  color: white;
+}
+
+.env-precon-card-body p + p {
+  margin-top: 1em;
+}
+
+/* Close (×) — top-right of the expanded card; hidden / inert otherwise */
 .env-precon-close {
   position: absolute;
   top: 24px;
@@ -869,7 +933,14 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background 150ms ease, border-color 150ms ease;
+  opacity: 0;
+  pointer-events: none;
+  transition: background 150ms ease, border-color 150ms ease, opacity 200ms ease 200ms;
+}
+
+.env-precon-card--open .env-precon-close {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .env-precon-close:hover {
@@ -878,6 +949,12 @@ body {
 }
 
 @media (max-width: 767px) {
+  .env-precon-card { height: 260px; }
+  .env-precon-card--open {
+    min-height: 520px;
+    height: calc(100vh - 60px);
+  }
+  .env-precon-card-content { padding: 64px 24px; }
   .env-precon-close {
     top: 12px;
     right: 12px;
