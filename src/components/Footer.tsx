@@ -47,7 +47,7 @@ export async function Footer() {
           />
           <div className="mt-6 flex items-center justify-start gap-3">
             <a
-              href="https://www.linkedin.com/company/envsn"
+              href="https://www.linkedin.com/company/envisionconstruction/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
@@ -61,7 +61,7 @@ export async function Footer() {
               />
             </a>
             <a
-              href="https://www.instagram.com/envsn"
+              href="https://www.instagram.com/envsn_construction/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
@@ -111,9 +111,16 @@ export async function Footer() {
         <div className="flex flex-col items-start">
           <h4 className="text-base font-semibold text-white">Contact Us</h4>
           <p className="mt-4 text-sm text-neutral-300">
-            <a href={`tel:${phone.replace(/[^0-9A-Za-z]/g, '')}`} className="hover:text-white">
+            {/* Mobile: tel: link so taps launch the phone app.
+                Desktop: plain text — clicking tel: links on a laptop
+                usually does nothing useful (or pops Skype/Phone Link). */}
+            <a
+              href={`tel:${phone.replace(/[^0-9A-Za-z]/g, '')}`}
+              className="md:hidden hover:text-white"
+            >
               {phone}
             </a>
+            <span className="hidden md:inline">{phone}</span>
           </p>
           <address className="mt-4 not-italic text-sm text-neutral-300 whitespace-pre-line leading-relaxed">
             {address}
