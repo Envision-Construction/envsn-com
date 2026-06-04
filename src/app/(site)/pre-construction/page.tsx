@@ -48,8 +48,8 @@ const FALLBACK_SERVICES = [
   {
     title: 'Site Balancing Analysis',
     videoUrl: '/videos/Site-Balancing_01.mp4',
-    headingBold: 'Minimize',
-    headingRest: 'Costs.',
+    headingBold: 'Minimize Costs.',
+    headingRest: '',
     headingLine2: 'Maximize Possibilities.',
     bodyParagraphs: [
       "Rugged, uneven plot? We'll show you just how much potential is hidden beneath the surface. Once 3D site mapping is complete, our experts go to work utilizing your data to optimize your site, maximizing the area you can build on. With this, we balance your site, minimizing land brought in and maximizing the return on land taken out.",
@@ -105,7 +105,7 @@ export default async function PreConstructionPage() {
             {page?.heroEyebrow ?? 'Site Planning'}
           </p>
           <h1 className="env-precon-hero-heading">
-            {page?.heroHeading ?? 'Pre-Construction Services'}
+            {page?.heroHeading ?? 'Next-Gen Preconstruction Services'}
           </h1>
           {page?.heroBody && page.heroBody.length > 0 ? (
             <div className="env-precon-hero-body">

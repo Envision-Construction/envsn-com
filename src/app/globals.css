@@ -712,6 +712,18 @@ body {
   z-index: 2;
 }
 
+/* Larger SITE PLANNING eyebrow — ~75% bigger than the global 16px */
+.env-precon-hero-content .env-eyebrow {
+  font-size: 28px;
+  letter-spacing: 0.16em;
+}
+
+@media (max-width: 767px) {
+  .env-precon-hero-content .env-eyebrow {
+    font-size: 22px;
+  }
+}
+
 .env-precon-hero-heading {
   margin-top: 12px;
   font-size: clamp(36px, 5vw, 64px);
@@ -864,7 +876,9 @@ body {
   opacity: 0;
 }
 
-/* Heading + body overlay shown only when the card is open */
+/* Heading + body overlay shown only when the card is open. Starts
+ * slightly scaled-down + centered around its midpoint so it appears to
+ * "pop open from the middle" as the card grows. */
 .env-precon-card-content {
   position: absolute;
   inset: 0;
@@ -876,13 +890,14 @@ body {
   z-index: 3;
   pointer-events: none;
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 350ms ease 150ms, transform 350ms ease 150ms;
+  transform: scale(0.9);
+  transform-origin: center center;
+  transition: opacity 450ms ease 200ms, transform 450ms cubic-bezier(0.22, 1.1, 0.36, 1) 200ms;
 }
 
 .env-precon-card--open .env-precon-card-content {
   opacity: 1;
-  transform: translateY(0);
+  transform: scale(1);
 }
 
 .env-precon-card-heading {

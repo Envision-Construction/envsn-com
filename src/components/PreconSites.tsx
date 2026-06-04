@@ -42,19 +42,36 @@ export function PreconSites({ services }: { services: PreconService[] }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [openIdx])
 
+  const RESTING_HEIGHT = 380
+
   const openCard = (idx: number) => {
     const el = cardRefs.current[idx]
     if (!el) {
       setOpenIdx(idx)
       return
     }
-    // Snap the card's top edge to right below the 60px sticky navbar
-    // BEFORE the height transition runs, so the panel is guaranteed to
-    // be properly framed regardless of where the click came from.
-    // 'instant' bypasses the html { scroll-behavior: smooth } global
-    // — the smooth feel comes from the height transition that follows.
-    const rect = el.getBoundingClientRect()
-    const targetY = Math.max(0, window.scrollY + rect.top - 60)
+
+    // Calculate where the new card's top will land AFTER React has
+    // committed the state change. If there's another card already open
+    // and it sits above the new one, that old card is about to shrink
+    // from its open height back to RESTING_HEIGHT — which shifts the
+    // new card upward by that delta. We pre-compensate the scroll so
+    // the new card ends up framed correctly regardless.
+    let projectedTop = el.getBoundingClientRect().top
+    if (openIdx !== null && openIdx !== idx) {
+      const oldEl = cardRefs.current[openIdx]
+      if (oldEl) {
+        const oldRect = oldEl.getBoundingClientRect()
+        if (oldRect.top < projectedTop) {
+          projectedTop -= Math.max(0, oldRect.height - RESTING_HEIGHT)
+        }
+      }
+    }
+
+    const targetY = Math.max(0, window.scrollY + projectedTop - 60)
+    // Instant snap so the height transition starts on a properly framed
+    // panel. The smooth feel comes from the height + content transitions
+    // that run after.
     window.scrollTo({
       top: targetY,
       behavior: 'instant' as ScrollBehavior,
