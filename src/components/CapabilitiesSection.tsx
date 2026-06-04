@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 export type CapabilityTile = {
   title: string
@@ -82,94 +82,109 @@ export function CapabilitiesSection({
 
   const detail = renderedDetail ? DETAILS[renderedDetail] : null
 
+  const renderDetailPanel = (className: string) => (
+    <div
+      className={`env-tiles-detail-wrap ${className}`}
+      data-open={openDetail ? 'true' : 'false'}
+      aria-hidden={!openDetail}
+    >
+      {detail && (
+        <div className="env-tiles-detail-inner">
+          <div className="flex justify-end mb-6">
+            <button
+              type="button"
+              onClick={() => setOpenDetail(null)}
+              className="env-tiles-detail-back"
+              aria-label="Close detail panel"
+            >
+              <span aria-hidden>×</span> CLOSE
+            </button>
+          </div>
+          <div className="env-tiles-detail-grid">
+            <div>
+              <h3 className="env-tiles-detail-title">{detail.title}</h3>
+              <div className="env-tiles-detail-rule" />
+              <ul className="env-tiles-detail-list">
+                {detail.items.map((item) => (
+                  <li key={item} className="env-tiles-detail-list-item">
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <a href={detail.ctaHref} className="env-tiles-detail-cta">
+                {detail.ctaLabel} <span aria-hidden>›</span>
+              </a>
+            </div>
+            <div className="flex items-center justify-center">
+              {detail.videoUrl ? (
+                <video
+                  src={detail.videoUrl}
+                  muted
+                  loop
+                  playsInline
+                  controls
+                  preload="metadata"
+                  className="w-full aspect-video object-cover rounded"
+                />
+              ) : (
+                <div className="w-full aspect-video bg-neutral-800 rounded" />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+
   return (
     <>
       <div className="env-tiles-row">
         {list.map((tile, idx) => (
-          <div key={tile.title + idx} className="env-tiles-tile">
-            {tile.imageUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={tile.imageUrl} alt="" className="env-tiles-tile-bg" />
-            )}
-            <div className="env-tiles-tile-shadow" />
-            <div className="env-tiles-tile-body">
-              <h3 className="env-tiles-tile-title">{tile.title}</h3>
-              <div className="env-tiles-tile-extras">
-                <div className="env-tiles-tile-rule" />
-                {tile.description && (
-                  <p className="env-tiles-tile-desc">{tile.description}</p>
-                )}
-                {tile.ctaLabel && tile.ctaDetailKey && (
-                  <button
-                    type="button"
-                    onClick={() => setOpenDetail(tile.ctaDetailKey!)}
-                    className="env-tiles-tile-button"
-                  >
-                    {tile.ctaLabel} <span aria-hidden>›</span>
-                  </button>
-                )}
-                {tile.ctaLabel && !tile.ctaDetailKey && tile.href && (
-                  <a href={tile.href} className="env-tiles-tile-button">
-                    {tile.ctaLabel} <span aria-hidden>›</span>
-                  </a>
-                )}
+          <Fragment key={tile.title + idx}>
+            <div className="env-tiles-tile">
+              {tile.imageUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={tile.imageUrl} alt="" className="env-tiles-tile-bg" />
+              )}
+              <div className="env-tiles-tile-shadow" />
+              <div className="env-tiles-tile-body">
+                <h3 className="env-tiles-tile-title">{tile.title}</h3>
+                <div className="env-tiles-tile-extras">
+                  <div className="env-tiles-tile-rule" />
+                  {tile.description && (
+                    <p className="env-tiles-tile-desc">{tile.description}</p>
+                  )}
+                  {tile.ctaLabel && tile.ctaDetailKey && (
+                    <button
+                      type="button"
+                      onClick={() => setOpenDetail(tile.ctaDetailKey!)}
+                      className="env-tiles-tile-button"
+                    >
+                      {tile.ctaLabel} <span aria-hidden>›</span>
+                    </button>
+                  )}
+                  {tile.ctaLabel && !tile.ctaDetailKey && tile.href && (
+                    <a href={tile.href} className="env-tiles-tile-button">
+                      {tile.ctaLabel} <span aria-hidden>›</span>
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+            {/* Mobile-only: detail panel appears inside the row, right after
+                the tile that owns this ctaDetailKey. Hidden on desktop where
+                the panel below the row takes over. */}
+            {tile.ctaDetailKey && (
+              <div className="env-tiles-detail-inline md:hidden">
+                {renderDetailPanel('')}
+              </div>
+            )}
+          </Fragment>
         ))}
       </div>
 
-      <div
-        className="env-tiles-detail-wrap"
-        data-open={openDetail ? 'true' : 'false'}
-        aria-hidden={!openDetail}
-      >
-        {detail && (
-          <div className="env-tiles-detail-inner">
-            <div className="flex justify-end mb-6">
-              <button
-                type="button"
-                onClick={() => setOpenDetail(null)}
-                className="env-tiles-detail-back"
-                aria-label="Close detail panel"
-              >
-                <span aria-hidden>×</span> CLOSE
-              </button>
-            </div>
-            <div className="env-tiles-detail-grid">
-              <div>
-                <h3 className="env-tiles-detail-title">{detail.title}</h3>
-                <div className="env-tiles-detail-rule" />
-                <ul className="env-tiles-detail-list">
-                  {detail.items.map((item) => (
-                    <li key={item} className="env-tiles-detail-list-item">
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <a href={detail.ctaHref} className="env-tiles-detail-cta">
-                  {detail.ctaLabel} <span aria-hidden>›</span>
-                </a>
-              </div>
-              <div className="flex items-center justify-center">
-                {detail.videoUrl ? (
-                  <video
-                    src={detail.videoUrl}
-                    muted
-                    loop
-                    playsInline
-                    controls
-                    preload="metadata"
-                    className="w-full aspect-video object-cover rounded"
-                  />
-                ) : (
-                  <div className="w-full aspect-video bg-neutral-800 rounded" />
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+      {/* Desktop-only: single detail panel below all tiles */}
+      <div className="hidden md:block">{renderDetailPanel('')}</div>
     </>
   )
 }

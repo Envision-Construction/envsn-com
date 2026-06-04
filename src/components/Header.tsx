@@ -35,7 +35,7 @@ export function Header() {
   return (
     <>
       <header className="env-header sticky top-0 z-40 w-full bg-white/95 backdrop-blur border-b border-neutral-200">
-        <div className="env-header-container mx-auto max-w-[1520px] grid grid-cols-[1fr_auto_1fr] md:grid-cols-[1fr_auto_1fr] items-center px-6 h-[60px]">
+        <div className="env-header-container mx-auto max-w-[1520px] grid grid-cols-[1fr_auto] md:grid-cols-[1fr_auto_1fr] items-center px-6 h-[60px]">
           {/* Column 1 — logo. Desktop: right-aligned w/ mr to sit near nav.
               Mobile: left-aligned at the page edge. */}
           <Link

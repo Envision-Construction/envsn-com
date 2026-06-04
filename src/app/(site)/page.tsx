@@ -161,7 +161,7 @@ export default async function HomePage() {
 
       {/* ============= TECHNOLOGY (text left, carousel right — matches Diversity/About layout) ============= */}
       <ScrollFade>
-        <section className="bg-white py-20 md:py-28">
+        <section className="env-culture-section bg-white py-20 md:py-28">
           <div className="env-container-narrow">
             <div className="env-section-head">
               <p className="env-eyebrow">{page?.technologyEyebrow ?? 'Culture'}</p>
@@ -296,7 +296,7 @@ function CultureSection({
   body?: PortableTextBlock[]
 }) {
   return (
-    <section id={id} className="bg-white py-20 md:py-28">
+    <section id={id} className="env-culture-section bg-white py-20 md:py-28">
       <div className="env-container-narrow">
         <div className="env-section-head">
           <p className="env-eyebrow">{eyebrow}</p>
