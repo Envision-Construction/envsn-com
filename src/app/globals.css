@@ -263,7 +263,10 @@ body {
   height: 663px; /* 15% shorter than the prior 780px */
   overflow: hidden;
   color: white;
-  cursor: pointer;
+  /* Tile body isn't clickable as a whole — only the 3D LiDAR Mapping
+   * button inside reveals a panel. Keep the default arrow so users
+   * don't expect the whole card to be a link. */
+  cursor: default;
 }
 
 .env-tiles-tile-bg {
@@ -452,6 +455,9 @@ body {
   border-radius: 999px;
   align-self: flex-start;
   transition: background-color 200ms;
+  /* Explicit pointer so it overrides the parent tile's cursor: default
+   * — this is the one element inside the card that IS clickable. */
+  cursor: pointer;
 }
 .env-tiles-tile-button:hover { background: var(--color-env-accent); }
 
