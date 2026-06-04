@@ -107,9 +107,21 @@ export default async function PreConstructionPage() {
           <h1 className="env-precon-hero-heading">
             {page?.heroHeading ?? 'Pre-Construction Services'}
           </h1>
-          {page?.heroBody && page.heroBody.length > 0 && (
+          {page?.heroBody && page.heroBody.length > 0 ? (
             <div className="env-precon-hero-body">
               <PortableText value={page.heroBody} />
+            </div>
+          ) : (
+            <div className="env-precon-hero-body">
+              <p>
+                Whether it&apos;s the construction industry as a whole or your
+                property, we&apos;re in the business of transformation. It all
+                starts with analyzing your site and crafting the perfect plan
+                to maximize your investment. Utilizing the latest tech, like
+                aerial drones, photogrammetry, TestFit technology, and AI
+                analysis, we turn weeks of planning into days, and guesswork
+                into precise evaluations.
+              </p>
             </div>
           )}
         </div>
@@ -142,12 +154,24 @@ export default async function PreConstructionPage() {
       {/* ============= CONTACT FORM — above the global footer ============= */}
       <section id="contact-us" className="bg-env-bg-soft text-env-dark-1 py-20 md:py-28">
         <div className="mx-auto max-w-3xl px-6 text-center">
-          <h2 className="text-3xl md:text-5xl font-light tracking-tight">
+          <h2 className="text-3xl md:text-5xl font-light tracking-tight text-env-green">
             {page?.ctaHeading ?? 'Ground Breaking Starts Here'}
           </h2>
-          {page?.ctaBody && page.ctaBody.length > 0 && (
+          {page?.ctaBody && page.ctaBody.length > 0 ? (
             <div className="mt-6 text-base leading-relaxed text-neutral-700">
               <PortableText value={page.ctaBody} />
+            </div>
+          ) : (
+            <div className="mt-6 text-base leading-relaxed text-neutral-700 space-y-4">
+              <p>
+                If you&apos;re wondering where to start, we&apos;ve got your
+                back. Need us to pick up where someone left off? We can help
+                with that too. We&apos;ll craft a game plan fit for your
+                practical and financial realities.
+              </p>
+              <p>
+                For project examples, questions, and more, reach out today.
+              </p>
             </div>
           )}
           <div className="mt-12 flex justify-center">

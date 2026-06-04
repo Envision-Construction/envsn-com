@@ -48,26 +48,20 @@ export function PreconSites({ services }: { services: PreconService[] }) {
       setOpenIdx(idx)
       return
     }
-    // Measure against the closed-state layout, then scroll the card's
-    // top edge to right below the 60px sticky navbar BEFORE flipping the
-    // open state. Scrolling first guarantees the card is properly framed
-    // when the height transition starts (no matter where the click came
-    // from). If we're already aligned within a couple of pixels, skip
-    // the scroll and open immediately.
+    // Snap the card's top edge to right below the 60px sticky navbar
+    // BEFORE the height transition runs, so the panel is guaranteed to
+    // be properly framed regardless of where the click came from.
+    // 'instant' bypasses the html { scroll-behavior: smooth } global
+    // — the smooth feel comes from the height transition that follows.
     const rect = el.getBoundingClientRect()
     const targetY = Math.max(0, window.scrollY + rect.top - 60)
-    const delta = Math.abs(targetY - window.scrollY)
-
-    if (delta < 2) {
-      setOpenIdx(idx)
-      return
-    }
-
-    window.scrollTo({ top: targetY, behavior: 'smooth' })
-    // Approximate Chrome/Firefox smooth-scroll duration scales with the
-    // distance; cap at ~450ms so long scrolls aren't waiting too long.
-    const wait = Math.min(450, 180 + delta * 0.25)
-    window.setTimeout(() => setOpenIdx(idx), wait)
+    window.scrollTo({
+      top: targetY,
+      behavior: 'instant' as ScrollBehavior,
+    })
+    // Open on the next frame so the new scroll position is committed
+    // first; the height transition then runs against a stable layout.
+    requestAnimationFrame(() => setOpenIdx(idx))
   }
 
   return (
