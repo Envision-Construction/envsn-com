@@ -30,7 +30,7 @@ type TeamMemberDoc = {
   _id: string
   name?: string
   role?: string
-  bio?: string
+  bio?: PortableTextBlock[] | string
   photoUrl?: string
   order?: number
 }

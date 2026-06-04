@@ -25,8 +25,38 @@ export const teamMember = defineType({
     defineField({
       name: 'bio',
       title: 'Bio (optional)',
-      type: 'text',
-      rows: 4,
+      description:
+        'Rich text — use the toolbar for bold, italic, and links.',
+      type: 'array',
+      of: [
+        {
+          type: 'block',
+          // Limit to paragraphs (no H1-H6 here)
+          styles: [{ title: 'Paragraph', value: 'normal' }],
+          lists: [],
+          marks: {
+            decorators: [
+              { title: 'Bold', value: 'strong' },
+              { title: 'Italic', value: 'em' },
+            ],
+            annotations: [
+              {
+                name: 'link',
+                type: 'object',
+                title: 'Link',
+                fields: [
+                  {
+                    name: 'href',
+                    type: 'url',
+                    validation: (r) =>
+                      r.uri({ scheme: ['http', 'https', 'mailto', 'tel'] }),
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
     }),
     defineField({
       name: 'order',

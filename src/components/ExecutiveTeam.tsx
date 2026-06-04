@@ -1,12 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import { PortableText, type PortableTextBlock } from 'next-sanity'
 
 export type ExecMember = {
   name: string
   role?: string
   photoUrl?: string
-  bio?: string
+  bio?: PortableTextBlock[] | string
 }
 
 const FALLBACK_TEAM: ExecMember[] = [
@@ -44,11 +45,7 @@ export function ExecutiveTeam({
             </div>
             <p className="env-ts-member-name">{m.name}</p>
             {m.role && <p className="env-ts-member-position">{m.role}</p>}
-            {m.bio && (
-              <p className="env-ts-member-bio mt-3 text-sm leading-relaxed text-neutral-700 whitespace-pre-line">
-                {m.bio}
-              </p>
-            )}
+            {renderBio(m.bio)}
           </div>
         ))}
       </div>
@@ -77,4 +74,41 @@ export function ExecutiveTeam({
       )}
     </div>
   )
+}
+
+/** Render either a Sanity Portable Text array (rich text with bold/italic/
+ *  links) or a plain string (legacy/fallback). */
+function renderBio(bio: ExecMember['bio']) {
+  if (!bio) return null
+  if (typeof bio === 'string') {
+    return (
+      <p className="env-ts-member-bio mt-3 text-sm leading-relaxed text-neutral-700 whitespace-pre-line">
+        {bio}
+      </p>
+    )
+  }
+  if (Array.isArray(bio) && bio.length > 0) {
+    return (
+      <div className="env-ts-member-bio mt-3 text-sm leading-relaxed text-neutral-700 space-y-2">
+        <PortableText
+          value={bio}
+          components={{
+            marks: {
+              link: ({ value, children }) => (
+                <a
+                  href={value?.href}
+                  target={value?.href?.startsWith('http') ? '_blank' : undefined}
+                  rel={value?.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  className="text-env-green underline hover:no-underline"
+                >
+                  {children}
+                </a>
+              ),
+            },
+          }}
+        />
+      </div>
+    )
+  }
+  return null
 }
