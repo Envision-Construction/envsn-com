@@ -133,7 +133,7 @@ export function CapabilitiesSection({
                 className="env-tiles-detail-back"
                 aria-label="Close detail panel"
               >
-                <span aria-hidden>‹</span> BACK
+                <span aria-hidden>×</span> CLOSE
               </button>
             </div>
             <div className="env-tiles-detail-grid">
