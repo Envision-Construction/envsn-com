@@ -22,69 +22,61 @@ export type PreconService = {
  * - At rest each panel shows its video paused at the first frame, with
  *   the service title centered on top; hover plays the loop muted,
  *   leave pauses + rewinds.
- * - Clicking a panel expands it inline to fill the viewport-minus-navbar.
- *   The other three panels collapse to height 0 (smooth transition),
- *   the video starts autoplaying, and the heading + body copy fade in
- *   over a darker overlay. A close (×) button in the top-right collapses
- *   everything back to the four-panel resting state.
+ * - Clicking a panel expands it inline to fill the viewport-minus-navbar
+ *   and snaps it flush below the navbar. Other panels stay where they
+ *   are — closed at 380px or open at full height — so multiple panels
+ *   can be open simultaneously. Each open panel only closes when its
+ *   own × button is clicked (or Esc closes them all).
  */
 export function PreconSites({ services }: { services: PreconService[] }) {
-  const [openIdx, setOpenIdx] = useState<number | null>(null)
+  const [openSet, setOpenSet] = useState<ReadonlySet<number>>(new Set())
   const cardRefs = useRef<Array<HTMLElement | null>>([])
 
-  // Esc closes the expanded panel.
+  // Esc closes every open panel at once.
   useEffect(() => {
-    if (openIdx === null) return
+    if (openSet.size === 0) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpenIdx(null)
+      if (e.key === 'Escape') setOpenSet(new Set())
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [openIdx])
-
-  const RESTING_HEIGHT = 380
+  }, [openSet.size])
 
   const openCard = (idx: number) => {
+    if (openSet.has(idx)) return
     const el = cardRefs.current[idx]
     if (!el) {
-      setOpenIdx(idx)
+      setOpenSet((prev) => new Set(prev).add(idx))
       return
     }
-
-    // Calculate where the new card's top will land AFTER React has
-    // committed the state change. If there's another card already open
-    // and it sits above the new one, that old card is about to shrink
-    // from its open height back to RESTING_HEIGHT — which shifts the
-    // new card upward by that delta. We pre-compensate the scroll so
-    // the new card ends up framed correctly regardless.
-    let projectedTop = el.getBoundingClientRect().top
-    if (openIdx !== null && openIdx !== idx) {
-      const oldEl = cardRefs.current[openIdx]
-      if (oldEl) {
-        const oldRect = oldEl.getBoundingClientRect()
-        if (oldRect.top < projectedTop) {
-          projectedTop -= Math.max(0, oldRect.height - RESTING_HEIGHT)
-        }
-      }
-    }
-
-    const targetY = Math.max(0, window.scrollY + projectedTop - 60)
-    // Instant snap so the height transition starts on a properly framed
-    // panel. The smooth feel comes from the height + content transitions
-    // that run after.
+    // No siblings collapse on open anymore, so the new card's top stays
+    // exactly where we measure it. Snap-scroll the top edge flush below
+    // the 60px navbar, then flip the open state on the next frame so
+    // the height transition starts against a stable layout.
+    const rect = el.getBoundingClientRect()
+    const targetY = Math.max(0, window.scrollY + rect.top - 60)
     window.scrollTo({
       top: targetY,
       behavior: 'instant' as ScrollBehavior,
     })
-    // Open on the next frame so the new scroll position is committed
-    // first; the height transition then runs against a stable layout.
-    requestAnimationFrame(() => setOpenIdx(idx))
+    requestAnimationFrame(() => {
+      setOpenSet((prev) => new Set(prev).add(idx))
+    })
+  }
+
+  const closeCard = (idx: number) => {
+    setOpenSet((prev) => {
+      if (!prev.has(idx)) return prev
+      const next = new Set(prev)
+      next.delete(idx)
+      return next
+    })
   }
 
   return (
     <section id="precon-services" className="env-precon-services">
       {services.map((s, i) => {
-        const isOpen = openIdx === i
+        const isOpen = openSet.has(i)
         return (
           <PreconCard
             key={(s.title ?? '') + i}
@@ -94,7 +86,7 @@ export function PreconSites({ services }: { services: PreconService[] }) {
             service={s}
             isOpen={isOpen}
             onOpen={() => openCard(i)}
-            onClose={() => setOpenIdx(null)}
+            onClose={() => closeCard(i)}
           />
         )
       })}
