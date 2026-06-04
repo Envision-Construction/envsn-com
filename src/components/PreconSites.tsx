@@ -16,6 +16,30 @@ export type PreconService = {
   bodyParagraphs?: string[]
 }
 
+const OPEN_MS = 750
+
+// Cubic ease-in-out — visually matches the height transition's
+// cubic-bezier(0.4, 0, 0.2, 1) closely enough that the scroll motion
+// and the panel growth feel like one coordinated animation.
+function easeInOutCubic(t: number) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+}
+
+function animateScrollTo(targetY: number, duration: number) {
+  if (typeof window === 'undefined') return
+  const startY = window.scrollY
+  const diff = targetY - startY
+  if (Math.abs(diff) < 1) return
+  const startTime = performance.now()
+  const step = (now: number) => {
+    const t = Math.min(1, (now - startTime) / duration)
+    const eased = easeInOutCubic(t)
+    window.scrollTo(0, startY + diff * eased)
+    if (t < 1) requestAnimationFrame(step)
+  }
+  requestAnimationFrame(step)
+}
+
 /**
  * Stacked, full-width video panels for the Pre-Construction page.
  *
@@ -49,18 +73,15 @@ export function PreconSites({ services }: { services: PreconService[] }) {
       setOpenSet((prev) => new Set(prev).add(idx))
       return
     }
-    // No siblings collapse on open anymore, so the new card's top stays
-    // put — its top edge is the same before, during, and after the
-    // height grows. That makes a smooth scroll target reliable. We
-    // start the scroll and the height transition on the same frame so
-    // both motions feel like one coordinated animation rather than a
-    // snap-then-grow sequence.
+    // Run our own RAF-driven scroll on the same duration + easing as
+    // the height transition (OPEN_MS / easeInOutCubic). Native
+    // window.scrollTo({behavior: 'smooth'}) finishes on its own clock
+    // (often ~300ms regardless of distance), so the scroll lands
+    // before the panel finishes growing and the motions feel split.
+    // With matched durations both glide together as a single motion.
     const rect = el.getBoundingClientRect()
     const targetY = Math.max(0, window.scrollY + rect.top - 60)
-    window.scrollTo({
-      top: targetY,
-      behavior: 'smooth',
-    })
+    animateScrollTo(targetY, OPEN_MS)
     setOpenSet((prev) => new Set(prev).add(idx))
   }
 
@@ -124,28 +145,23 @@ const PreconCard = function PreconCard({
     if (v && v.currentTime === 0) v.currentTime = 0.05
   }
 
-  // When the card opens, start the loop playing; when it closes or
-  // collapses, pause + rewind so the next interaction starts fresh.
+  // Always reset to the first-frame still when the open state changes
+  // — the video only plays while the cursor is over the card, never
+  // automatically while it's expanded.
   useEffect(() => {
     const v = videoRef.current
     if (!v) return
-    if (isOpen) {
-      void v.play().catch(() => undefined)
-    } else {
-      v.pause()
-      v.currentTime = 0.05
-    }
+    v.pause()
+    v.currentTime = 0.05
   }, [isOpen])
 
   const handlePointerEnter = () => {
-    if (isOpen) return
     const v = videoRef.current
     if (!v) return
     void v.play().catch(() => undefined)
   }
 
   const handlePointerLeave = () => {
-    if (isOpen) return
     const v = videoRef.current
     if (!v) return
     v.pause()
