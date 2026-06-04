@@ -160,16 +160,24 @@ export async function submitContact(
 // ---------------------------------------------------------------------------
 
 const ENVISION_GREEN = '#007A53'
+const ENVISION_LIGHT_GREEN = '#CAE8E0'
 const ENVISION_DARK = '#111111'
 const ENVISION_GREY = '#929296'
 const ENVISION_LIGHT_GREY = '#E6E6E6'
 const ENVISION_FONT =
   "'Helvetica Neue', Helvetica, Arial, sans-serif"
 
-const LOGO_URL =
-  process.env.NEXT_PUBLIC_SITE_URL
-    ? `${process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')}/uploads/2024/05/logo-black_prime.png`
-    : 'https://envsn.com/uploads/2024/05/logo-black_prime.png'
+// Vercel auto-sets VERCEL_PROJECT_PRODUCTION_URL to the canonical
+// production alias (envsn-com.vercel.app while DNS for envsn.com is
+// still parked at GoDaddy). NEXT_PUBLIC_SITE_URL overrides for the
+// eventual envsn.com cutover.
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : 'https://envsn-com.vercel.app')
+
+const LOGO_URL = `${SITE_URL}/uploads/2024/05/logo-black_prime.png`
 
 function escapeHtml(s: string): string {
   return s
@@ -183,10 +191,10 @@ function escapeHtml(s: string): string {
 function detailRow(label: string, value: string): string {
   return `
     <tr>
-      <td style="padding:8px 0;border-bottom:1px solid ${ENVISION_LIGHT_GREY};vertical-align:top;width:96px;">
-        <span style="font-family:${ENVISION_FONT};font-size:11px;font-weight:500;line-height:1.5;color:${ENVISION_GREY};text-transform:uppercase;letter-spacing:0.08em;">${label}</span>
+      <td style="padding:10px 0;border-bottom:1px solid ${ENVISION_LIGHT_GREY};vertical-align:top;width:96px;">
+        <span style="font-family:${ENVISION_FONT};font-size:11px;font-weight:700;line-height:1.5;color:${ENVISION_GREEN};text-transform:uppercase;letter-spacing:0.1em;">${label}</span>
       </td>
-      <td style="padding:8px 0;border-bottom:1px solid ${ENVISION_LIGHT_GREY};vertical-align:top;">
+      <td style="padding:10px 0;border-bottom:1px solid ${ENVISION_LIGHT_GREY};vertical-align:top;">
         <span style="font-family:${ENVISION_FONT};font-size:15px;font-weight:400;line-height:1.5;color:${ENVISION_DARK};">${value}</span>
       </td>
     </tr>`
@@ -221,6 +229,11 @@ function renderInquiryHtml(d: {
     <td align="center" style="padding:32px 16px;">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="background:#ffffff;max-width:600px;width:100%;">
 
+        <!-- Top brand bar — full-width green strip across the email -->
+        <tr>
+          <td style="height:6px;line-height:6px;font-size:0;background:${ENVISION_GREEN};">&nbsp;</td>
+        </tr>
+
         <tr>
           <td style="padding:32px 40px 8px;">
             <img src="${LOGO_URL}" alt="ENVISION" width="160" style="display:block;border:0;outline:0;height:auto;max-width:160px;">
@@ -228,8 +241,8 @@ function renderInquiryHtml(d: {
         </tr>
 
         <tr>
-          <td style="padding:0 40px;">
-            <div style="height:2px;width:48px;background:${ENVISION_GREEN};line-height:2px;font-size:0;">&nbsp;</div>
+          <td style="padding:4px 40px 0;">
+            <div style="height:3px;width:64px;background:${ENVISION_GREEN};line-height:3px;font-size:0;">&nbsp;</div>
           </td>
         </tr>
 
@@ -262,10 +275,10 @@ function renderInquiryHtml(d: {
 
         <tr>
           <td style="padding:24px 40px 8px;">
-            <p style="margin:0 0 10px;font-family:${ENVISION_FONT};font-size:11px;font-weight:500;line-height:1.5;color:${ENVISION_GREY};text-transform:uppercase;letter-spacing:0.08em;">
+            <p style="margin:0 0 10px;font-family:${ENVISION_FONT};font-size:11px;font-weight:700;line-height:1.5;color:${ENVISION_GREEN};text-transform:uppercase;letter-spacing:0.1em;">
               Message
             </p>
-            <div style="padding:18px 20px;background:${ENVISION_LIGHT_GREY};border-left:3px solid ${ENVISION_GREEN};">
+            <div style="padding:20px 22px;background:${ENVISION_LIGHT_GREEN};border-left:4px solid ${ENVISION_GREEN};">
               <p style="margin:0;font-family:${ENVISION_FONT};font-size:15px;line-height:1.65;color:${ENVISION_DARK};white-space:pre-wrap;">${escapeHtml(d.message)}</p>
             </div>
           </td>
