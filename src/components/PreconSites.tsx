@@ -74,16 +74,48 @@ export function PreconSites({ services }: { services: PreconService[] }) {
       setOpenSet((prev) => new Set(prev).add(idx))
       return
     }
-    // Run our own RAF-driven scroll on the same duration + easing as
-    // the height transition (OPEN_MS / easeInOutCubic). Native
-    // window.scrollTo({behavior: 'smooth'}) finishes on its own clock
-    // (often ~300ms regardless of distance), so the scroll lands
-    // before the panel finishes growing and the motions feel split.
-    // With matched durations both glide together as a single motion.
-    const rect = el.getBoundingClientRect()
-    const targetY = Math.max(0, window.scrollY + rect.top - 60)
-    animateScrollTo(targetY, OPEN_MS)
+    // Drive scroll AND height from the same RAF loop so they are
+    // guaranteed to start on the same frame and progress at the same
+    // rate. The CSS height transition is suppressed for the duration
+    // of the animation via inline transition: none; once the loop
+    // finishes we hand control back to the stylesheet, which keeps
+    // the panel at its open height because the --open class is now on.
+    const startRect = el.getBoundingClientRect()
+    const startScrollY = window.scrollY
+    const targetScrollY = Math.max(0, startScrollY + startRect.top - 60)
+    const startHeight = startRect.height
+    const targetHeight = Math.max(600, window.innerHeight - 60)
+    const scrollDiff = targetScrollY - startScrollY
+    const heightDiff = targetHeight - startHeight
+
+    // Suppress the CSS transition while JS owns the height, and pin
+    // the current height inline so the open-class change doesn't
+    // cause a layout snap.
+    el.style.transition = 'none'
+    el.style.height = `${startHeight}px`
+
+    // Flip React state so the --open class lands (which fades the
+    // content + title overlay). The class also sets height via CSS,
+    // but the inline style takes precedence until we clear it.
     setOpenSet((prev) => new Set(prev).add(idx))
+
+    const startTime = performance.now()
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - startTime) / OPEN_MS)
+      const eased = easeOutCubic(t)
+      window.scrollTo(0, startScrollY + scrollDiff * eased)
+      el.style.height = `${startHeight + heightDiff * eased}px`
+      if (t < 1) {
+        requestAnimationFrame(tick)
+      } else {
+        // Hand height back to CSS — the --open class already sets
+        // calc(100vh - 60px) so removing the inline style is a no-op
+        // visually but lets the page respond to viewport resizes.
+        el.style.height = ''
+        el.style.transition = ''
+      }
+    }
+    requestAnimationFrame(tick)
   }
 
   const closeCard = (idx: number) => {
