@@ -830,30 +830,25 @@ body {
   .env-precon-card { height: 260px; }
 }
 
-/* Fullscreen overlay — anchored below the 60px sticky navbar */
+/* Fullscreen overlay — anchored below the 60px sticky navbar. Width
+ * and height are locked (not right/bottom: 0) so the JS-driven
+ * transform: scale() math is correct. */
 .env-precon-fullscreen {
   position: fixed;
   top: 60px;
   left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100vw;
+  height: calc(100vh - 60px);
   background: #000;
   z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: env-precon-fade-in 220ms ease-out;
-}
-
-@keyframes env-precon-fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  overflow: hidden;
+  will-change: transform;
 }
 
 .env-precon-fullscreen-video {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   background: #000;
 }
 
