@@ -221,7 +221,7 @@ body {
 
 .env-tiles-tile {
   position: relative;
-  height: 600px;
+  height: 780px; /* 30% taller than the prior 600px */
   overflow: hidden;
   color: white;
   cursor: pointer;
@@ -386,12 +386,28 @@ body {
 /* ============================================================
  * Executive team
  * ============================================================ */
-.env-ts-track {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
+/* Sliding carousel: viewport clips overflow, track holds ALL members in
+ * a flex row and is translated by JS based on the current page index.
+ * Smooth ease-out transition gives the left/right slide feel. */
+.env-ts-viewport {
+  overflow: hidden;
 }
-@media (max-width: 767px) { .env-ts-track { grid-template-columns: 1fr; } }
+
+.env-ts-track {
+  display: flex;
+  gap: 32px;
+  transition: transform 600ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  will-change: transform;
+}
+
+.env-ts-slide {
+  flex: 0 0 calc((100% - 64px) / 3);  /* 3 visible, 2 gaps of 32px each */
+  min-width: 0;
+}
+
+@media (max-width: 767px) {
+  .env-ts-slide { flex: 0 0 100%; }
+}
 
 .env-ts-member { text-align: left; }
 .env-ts-member-image {
