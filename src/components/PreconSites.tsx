@@ -44,15 +44,17 @@ export function PreconSites({ services }: { services: PreconService[] }) {
 
   const openCard = (idx: number) => {
     setOpenIdx(idx)
-    // Anchor the expanded panel to just below the sticky navbar so the
-    // user lands on the heading regardless of where on the page they
-    // clicked from. scroll-margin-top: 60px on .env-precon-card keeps
-    // the panel clear of the navbar.
+    // Wait one frame for React to commit the open state, then explicitly
+    // scroll so the card's top edge lands right below the 60px sticky
+    // navbar. Manual window.scrollTo is more predictable than
+    // scrollIntoView + scroll-margin-top, which some browsers honor
+    // inconsistently with smooth behavior.
     requestAnimationFrame(() => {
-      cardRefs.current[idx]?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      })
+      const el = cardRefs.current[idx]
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      const targetY = window.scrollY + rect.top - 60
+      window.scrollTo({ top: targetY, behavior: 'smooth' })
     })
   }
 

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { PortableText, type PortableTextBlock } from 'next-sanity'
 
+import { ContactForm } from '@/components/ContactForm'
 import { PreconSites } from '@/components/PreconSites'
 import { client } from '@/sanity/client'
 import { preConstructionPageQuery } from '@/sanity/queries'
@@ -137,6 +138,23 @@ export default async function PreConstructionPage() {
 
       {/* ============= 4 FULL-WIDTH VIDEO PANELS (click to expand) ============= */}
       <PreconSites services={services} />
+
+      {/* ============= CONTACT FORM — above the global footer ============= */}
+      <section id="contact-us" className="bg-env-bg-soft text-env-dark-1 py-20 md:py-28">
+        <div className="env-container-narrow mx-auto max-w-3xl text-center">
+          <h2 className="text-3xl md:text-5xl font-light tracking-tight">
+            {page?.ctaHeading ?? 'Ground Breaking Starts Here'}
+          </h2>
+          {page?.ctaBody && page.ctaBody.length > 0 && (
+            <div className="mt-6 text-base leading-relaxed text-neutral-700">
+              <PortableText value={page.ctaBody} />
+            </div>
+          )}
+          <div className="mt-12 mx-auto">
+            <ContactForm />
+          </div>
+        </div>
+      </section>
     </>
   )
 }
