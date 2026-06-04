@@ -68,7 +68,7 @@ export function TechnologyCarousel({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={f.imageUrl}
-                alt={f.title}
+                alt=""
                 className="env-culture-image w-full max-h-[600px] object-cover"
               />
               <div className="mt-6 w-full">

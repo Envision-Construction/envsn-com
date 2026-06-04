@@ -80,7 +80,7 @@ export function ExecutiveTeam({
                   <div className="env-ts-member-image-bg" />
                   {m.photoUrl && (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={m.photoUrl} alt={m.name} />
+                    <img src={m.photoUrl} alt="" />
                   )}
                 </div>
                 <p className="env-ts-member-name">{m.name}</p>

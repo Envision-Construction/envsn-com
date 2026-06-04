@@ -209,7 +209,7 @@ export default async function HomePage() {
               {sectors.map((s) => (
                 <div key={s.name} className="text-center">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={s.iconPath} alt={s.name} className="mx-auto h-24 w-24 object-contain" />
+                  <img src={s.iconPath} alt="" className="mx-auto h-24 w-24 object-contain" />
                   <p className="mt-3 text-sm font-medium text-neutral-800">{s.name}</p>
                 </div>
               ))}
