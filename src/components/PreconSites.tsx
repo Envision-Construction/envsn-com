@@ -50,18 +50,18 @@ export function PreconSites({ services }: { services: PreconService[] }) {
       return
     }
     // No siblings collapse on open anymore, so the new card's top stays
-    // exactly where we measure it. Snap-scroll the top edge flush below
-    // the 60px navbar, then flip the open state on the next frame so
-    // the height transition starts against a stable layout.
+    // put — its top edge is the same before, during, and after the
+    // height grows. That makes a smooth scroll target reliable. We
+    // start the scroll and the height transition on the same frame so
+    // both motions feel like one coordinated animation rather than a
+    // snap-then-grow sequence.
     const rect = el.getBoundingClientRect()
     const targetY = Math.max(0, window.scrollY + rect.top - 60)
     window.scrollTo({
       top: targetY,
-      behavior: 'instant' as ScrollBehavior,
+      behavior: 'smooth',
     })
-    requestAnimationFrame(() => {
-      setOpenSet((prev) => new Set(prev).add(idx))
-    })
+    setOpenSet((prev) => new Set(prev).add(idx))
   }
 
   const closeCard = (idx: number) => {

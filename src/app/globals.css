@@ -796,7 +796,10 @@ body {
   display: block;
   background: #000;
   scroll-margin-top: 60px;
-  transition: height 550ms cubic-bezier(0.32, 0.72, 0, 1);
+  /* Longer + gentler easing (Material standard) so the height growth
+   * feels like a smooth glide rather than a snap-and-stop. */
+  transition: height 750ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: height;
 }
 
 .env-precon-card + .env-precon-card {
@@ -878,7 +881,8 @@ body {
 
 /* Heading + body overlay shown only when the card is open. Starts
  * slightly scaled-down + centered around its midpoint so it appears to
- * "pop open from the middle" as the card grows. */
+ * "pop open from the middle" as the card grows. The delay lets the
+ * height visibly commit to growing first so the type lands cleanly. */
 .env-precon-card-content {
   position: absolute;
   inset: 0;
@@ -890,9 +894,11 @@ body {
   z-index: 3;
   pointer-events: none;
   opacity: 0;
-  transform: scale(0.9);
+  transform: scale(0.92);
   transform-origin: center center;
-  transition: opacity 450ms ease 200ms, transform 450ms cubic-bezier(0.22, 1.1, 0.36, 1) 200ms;
+  transition:
+    opacity 550ms ease 300ms,
+    transform 550ms cubic-bezier(0.22, 1.0, 0.36, 1) 300ms;
 }
 
 .env-precon-card--open .env-precon-card-content {
