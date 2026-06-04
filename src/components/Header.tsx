@@ -1,14 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 import { SearchOverlay } from './SearchOverlay'
-
-/**
- * Site header — matches the legacy Divi build.
- * Client component because it owns the SearchOverlay open/close state.
- */
 
 type NavItem = { label: string; href: string; external?: boolean }
 
@@ -20,14 +16,49 @@ const NAV: NavItem[] = [
   { label: 'Careers', href: 'https://careers.envsn.com', external: true },
 ]
 
+/**
+ * Site header — sticky, white, with logo / nav / Contact Us + search.
+ * Client component because it owns the SearchOverlay open state and
+ * the active-nav highlight that animates a green underline left→right
+ * on the clicked item.
+ *
+ * Active nav resolution priority:
+ *   1. Whatever the user most recently clicked (click state)
+ *   2. The current pathname when the page first loads (so /pre-construction
+ *      shows the Pre Construction link as active out of the gate)
+ */
+
 export function Header() {
+  const pathname = usePathname()
   const [searchOpen, setSearchOpen] = useState(false)
+  const [clickedNav, setClickedNav] = useState<string | null>(null)
+
+  // Pathname-based default on first render: highlight the nav item whose
+  // href matches the current route (ignoring the hash so /#culture maps
+  // to '/'). Cleared whenever the user navigates by clicking — clickedNav
+  // takes over after the first click.
+  useEffect(() => {
+    if (clickedNav !== null) return
+    const match = NAV.find((n) => {
+      if (n.external) return false
+      const path = n.href.split('#')[0] || '/'
+      return path === pathname
+    })
+    if (match && (pathname === '/pre-construction' || pathname === '/')) {
+      // Only auto-highlight Pre Construction on its own route; on '/' don't
+      // pre-select anything (every section anchor matches '/').
+      if (pathname === '/pre-construction' && match.label === 'Pre Construction') {
+        setClickedNav('Pre Construction')
+      }
+    }
+  }, [pathname, clickedNav])
+
+  const activeLabel = clickedNav
 
   return (
     <>
       <header className="env-header sticky top-0 z-40 w-full bg-white/95 backdrop-blur border-b border-neutral-200">
         <div className="env-header-container mx-auto max-w-[1520px] flex items-center justify-between px-6 h-[60px]">
-          {/* Left — logo */}
           <Link href="/" aria-label="Envision Construction — Home" className="env-header-logo flex-shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -37,32 +68,39 @@ export function Header() {
             />
           </Link>
 
-          {/* Middle — nav */}
           <nav className="env-header-menu hidden md:flex items-center gap-8">
-            {NAV.map((item) =>
-              item.external ? (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="env-header-link text-sm uppercase tracking-wider text-neutral-800 hover:text-env-green transition-colors"
-                >
-                  {item.label}
-                </a>
-              ) : (
+            {NAV.map((item) => {
+              const isActive = activeLabel === item.label
+              const className = `env-header-link text-sm uppercase tracking-wider text-neutral-800 hover:text-env-green transition-colors ${
+                isActive ? 'env-header-link--active' : ''
+              }`
+              if (item.external) {
+                return (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={className}
+                    onClick={() => setClickedNav(item.label)}
+                  >
+                    {item.label}
+                  </a>
+                )
+              }
+              return (
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="env-header-link text-sm uppercase tracking-wider text-neutral-800 hover:text-env-green transition-colors"
+                  className={className}
+                  onClick={() => setClickedNav(item.label)}
                 >
                   {item.label}
                 </Link>
-              ),
-            )}
+              )
+            })}
           </nav>
 
-          {/* Right — Contact Us + search */}
           <div className="env-header-menu-right flex items-center gap-3">
             <Link
               href="/#contact-us"

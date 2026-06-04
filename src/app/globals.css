@@ -41,6 +41,31 @@ body {
  * ============================================================ */
 .env-green { color: var(--color-env-green); }
 .env-bold { font-weight: 700; }
+
+/* ============================================================
+ * Header nav link — green underline that animates left→right on click
+ * (matches the env-green eyebrow color)
+ * ============================================================ */
+.env-header-link {
+  position: relative;
+}
+
+.env-header-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  height: 2px;
+  width: 100%;
+  background: var(--color-env-green);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 400ms ease-out;
+}
+
+.env-header-link--active::after {
+  transform: scaleX(1);
+}
 .env-container {
   max-width: 1280px;
   margin-inline: auto;
