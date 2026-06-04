@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { PortableText, type PortableTextBlock } from 'next-sanity'
 
 import { ContactForm } from '@/components/ContactForm'
+import { PreconSites } from '@/components/PreconSites'
 import { client } from '@/sanity/client'
 import { preConstructionPageQuery } from '@/sanity/queries'
 
@@ -60,66 +61,46 @@ export default async function PreConstructionPage() {
 
   return (
     <>
-      {/* ============= HERO ============= */}
-      <section className="bg-white text-env-dark-1 py-24 md:py-32">
-        <div className="env-container max-w-4xl">
-          <p className="text-xs uppercase tracking-widest text-env-green">
+      {/* ============= HERO (faded construction-site backdrop + arrow CTA) ============= */}
+      <section className="env-precon-hero">
+        <div className="env-precon-hero-content">
+          <p className="env-eyebrow">
             {page?.heroEyebrow ?? 'Site Planning'}
           </p>
-          <h1 className="mt-3 text-4xl md:text-6xl font-light tracking-tight">
+          <h1 className="env-precon-hero-heading">
             {page?.heroHeading ?? 'Pre-Construction Services'}
           </h1>
           {page?.heroBody && page.heroBody.length > 0 && (
-            <div className="mt-6 text-base md:text-lg leading-relaxed text-neutral-700">
+            <div className="env-precon-hero-body">
               <PortableText value={page.heroBody} />
             </div>
           )}
         </div>
+        <a
+          href="#precon-services"
+          className="env-precon-hero-arrow"
+          aria-label="Scroll to 3D Site Mapping"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            aria-hidden
+          >
+            <path
+              d="M6 9l6 6 6-6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </a>
       </section>
 
-      {/* ============= SERVICE CARDS (with looping background videos) ============= */}
-      <section id="features" className="bg-env-bg-light py-20 md:py-28">
-        <div className="env-container grid gap-12 md:grid-cols-2">
-          {services.map((service, i) => (
-            <article
-              key={i}
-              className="env-fullwidth-video relative aspect-video overflow-hidden rounded-lg bg-env-dark-1 group"
-            >
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                poster={service.posterUrl}
-                className="env-fwv-video absolute inset-0 h-full w-full object-cover opacity-70 group-hover:opacity-90 transition-opacity"
-              >
-                {service.videoUrl && <source src={service.videoUrl} type="video/mp4" />}
-              </video>
-              <div className="env-fwv-details relative z-10 flex h-full flex-col justify-end p-6 text-white">
-                <h3 className="env-fwv-title text-2xl md:text-3xl font-light">
-                  {service.title}
-                </h3>
-                {(service.headingLine1 || service.headingLine2) && (
-                  <p className="env-fwv-details-title mt-2 text-lg text-env-accent">
-                    {service.headingLine1}
-                    {service.headingLine2 && (
-                      <>
-                        <br />
-                        {service.headingLine2}
-                      </>
-                    )}
-                  </p>
-                )}
-                {service.body && service.body.length > 0 && (
-                  <div className="env-fwv-details-description mt-4 text-sm leading-relaxed text-neutral-200 max-w-md">
-                    <PortableText value={service.body} />
-                  </div>
-                )}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+      {/* ============= 4 FULL-WIDTH VIDEO PANELS (click to expand) ============= */}
+      <PreconSites services={services} />
 
       {/* ============= CLOSING CTA + FORM ============= */}
       <section className="bg-env-dark-1 text-white py-20 md:py-28">
