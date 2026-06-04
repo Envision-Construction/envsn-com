@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export type PreconService = {
   title?: string
@@ -39,28 +39,11 @@ export function PreconSites({ services }: { services: PreconService[] }) {
   return (
     <section id="precon-services" className="env-precon-services">
       {services.map((s, i) => (
-        <button
+        <PreconCard
           key={(s.title ?? '') + i}
-          type="button"
-          className="env-precon-card"
-          onClick={() => setOpenIdx(i)}
-          aria-label={s.title ? `Open ${s.title} video` : 'Open video'}
-        >
-          {s.videoUrl && (
-            <video
-              src={s.videoUrl}
-              poster={s.posterUrl}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              className="env-precon-card-video"
-            />
-          )}
-          <div className="env-precon-card-overlay" />
-          {s.title && <span className="env-precon-card-title">{s.title}</span>}
-        </button>
+          service={s}
+          onOpen={() => setOpenIdx(i)}
+        />
       ))}
 
       {active && active.videoUrl && (
@@ -90,5 +73,75 @@ export function PreconSites({ services }: { services: PreconService[] }) {
         </div>
       )}
     </section>
+  )
+}
+
+/**
+ * One preview panel. The video shows its first frame as a still poster
+ * (loaded via preload="metadata"); on pointer-enter it starts playing
+ * muted, on pointer-leave it pauses + rewinds. Click opens fullscreen.
+ *
+ * Touch devices fire pointerenter on tap, so a quick tap will both
+ * preview-play and open the fullscreen — which is fine since opening
+ * fullscreen swaps to a controlled autoplaying video anyway.
+ */
+function PreconCard({
+  service,
+  onOpen,
+}: {
+  service: PreconService
+  onOpen: () => void
+}) {
+  const videoRef = useRef<HTMLVideoElement | null>(null)
+
+  // Once metadata loads, nudge currentTime so the first frame renders as
+  // a still poster instead of a black box.
+  const handleLoadedMetadata = () => {
+    const v = videoRef.current
+    if (v && v.currentTime === 0) v.currentTime = 0.05
+  }
+
+  const handlePointerEnter = () => {
+    const v = videoRef.current
+    if (!v) return
+    void v.play().catch(() => {
+      /* autoplay block — fine, the click handler still opens it */
+    })
+  }
+
+  const handlePointerLeave = () => {
+    const v = videoRef.current
+    if (!v) return
+    v.pause()
+    v.currentTime = 0.05
+  }
+
+  return (
+    <button
+      type="button"
+      className="env-precon-card"
+      onClick={onOpen}
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
+      aria-label={service.title ? `Open ${service.title} video` : 'Open video'}
+    >
+      {service.videoUrl && (
+        <video
+          ref={videoRef}
+          src={service.videoUrl}
+          poster={service.posterUrl}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          onLoadedMetadata={handleLoadedMetadata}
+          className="env-precon-card-video"
+        />
+      )}
+      <div className="env-precon-card-overlay" />
+      {service.title && (
+        <span className="env-precon-card-title">{service.title}</span>
+      )}
+    </button>
   )
 }
