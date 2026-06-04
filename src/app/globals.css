@@ -391,9 +391,34 @@ body {
  * ============================================================ */
 /* Sliding carousel: viewport clips overflow, track holds ALL members in
  * a flex row and is translated by JS based on the current page index.
- * Smooth ease-out transition gives the left/right slide feel. */
+ * Smooth ease-out transition gives the left/right slide feel.
+ * The row wrapper positions the prev/next arrows on the left and right
+ * of the viewport, vertically centered on the cards. */
+.env-ts-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .env-ts-viewport {
   overflow: hidden;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.env-ts-arrow--left,
+.env-ts-arrow--right {
+  flex-shrink: 0;
+  /* Vertically aligned over the portrait area (not the bio text) */
+  align-self: flex-start;
+  margin-top: 120px;
+}
+
+@media (max-width: 767px) {
+  .env-ts-arrow--left,
+  .env-ts-arrow--right {
+    margin-top: 80px;
+  }
 }
 
 .env-ts-track {

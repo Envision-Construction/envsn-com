@@ -58,7 +58,19 @@ export function ExecutiveTeam({
   }, [start, list.length])
 
   return (
-    <div>
+    <div className="env-ts-row">
+      {list.length > PER_PAGE_DESKTOP && (
+        <button
+          type="button"
+          className="env-ts-arrow env-ts-arrow--left"
+          aria-label="Previous executives"
+          disabled={start === 0}
+          onClick={() => setStart((s) => Math.max(0, s - 1))}
+        >
+          ‹
+        </button>
+      )}
+
       <div ref={viewportRef} className="env-ts-viewport">
         <div ref={trackRef} className="env-ts-track">
           {list.map((m) => (
@@ -81,26 +93,15 @@ export function ExecutiveTeam({
       </div>
 
       {list.length > PER_PAGE_DESKTOP && (
-        <div className="mt-10 flex items-center justify-center gap-3">
-          <button
-            type="button"
-            className="env-ts-arrow"
-            aria-label="Previous executives"
-            disabled={start === 0}
-            onClick={() => setStart((s) => Math.max(0, s - 1))}
-          >
-            ‹
-          </button>
-          <button
-            type="button"
-            className="env-ts-arrow"
-            aria-label="Next executives"
-            disabled={start === maxStart}
-            onClick={() => setStart((s) => Math.min(maxStart, s + 1))}
-          >
-            ›
-          </button>
-        </div>
+        <button
+          type="button"
+          className="env-ts-arrow env-ts-arrow--right"
+          aria-label="Next executives"
+          disabled={start === maxStart}
+          onClick={() => setStart((s) => Math.min(maxStart, s + 1))}
+        >
+          ›
+        </button>
       )}
     </div>
   )
