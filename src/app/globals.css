@@ -48,6 +48,7 @@ body {
  * ============================================================ */
 .env-header-link {
   position: relative;
+  font-weight: 700;
 }
 
 .env-header-link::after {
