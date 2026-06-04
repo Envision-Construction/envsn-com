@@ -60,7 +60,6 @@ export function PreconSites({ services }: { services: PreconService[] }) {
     <section id="precon-services" className="env-precon-services">
       {services.map((s, i) => {
         const isOpen = openIdx === i
-        const isCollapsed = openIdx !== null && openIdx !== i
         return (
           <PreconCard
             key={(s.title ?? '') + i}
@@ -69,7 +68,6 @@ export function PreconSites({ services }: { services: PreconService[] }) {
             }}
             service={s}
             isOpen={isOpen}
-            isCollapsed={isCollapsed}
             onOpen={() => openCard(i)}
             onClose={() => setOpenIdx(null)}
           />
@@ -91,14 +89,12 @@ export function PreconSites({ services }: { services: PreconService[] }) {
 const PreconCard = function PreconCard({
   service,
   isOpen,
-  isCollapsed,
   onOpen,
   onClose,
   ref,
 }: {
   service: PreconService
   isOpen: boolean
-  isCollapsed: boolean
   onOpen: () => void
   onClose: () => void
   ref: (el: HTMLElement | null) => void
@@ -142,7 +138,6 @@ const PreconCard = function PreconCard({
   const className = [
     'env-precon-card',
     isOpen ? 'env-precon-card--open' : '',
-    isCollapsed ? 'env-precon-card--collapsed' : '',
   ]
     .filter(Boolean)
     .join(' ')
@@ -151,7 +146,6 @@ const PreconCard = function PreconCard({
     <article
       ref={ref}
       className={className}
-      aria-hidden={isCollapsed}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
     >
@@ -162,7 +156,7 @@ const PreconCard = function PreconCard({
         className="env-precon-card-hit"
         onClick={onOpen}
         aria-label={service.title ? `Open ${service.title}` : 'Open'}
-        tabIndex={isOpen || isCollapsed ? -1 : 0}
+        tabIndex={isOpen ? -1 : 0}
         disabled={isOpen}
       />
 

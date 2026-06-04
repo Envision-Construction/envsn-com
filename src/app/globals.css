@@ -791,16 +791,12 @@ body {
   border-top: 2px solid #000;
 }
 
-/* Expanded — fills the viewport minus the 60px sticky navbar */
+/* Expanded — fills the viewport minus the 60px sticky navbar.
+ * Sibling cards stay at their resting height so the user can scroll
+ * past the expanded panel to reach the others without closing it. */
 .env-precon-card--open {
   height: calc(100vh - 60px);
   min-height: 600px;
-}
-
-/* Collapsed — sibling cards squish to 0 when a peer opens */
-.env-precon-card--collapsed {
-  height: 0;
-  border-top-width: 0;
 }
 
 /* Click-anywhere target — fills the panel at rest, disabled when open */
