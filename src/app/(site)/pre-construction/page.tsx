@@ -141,7 +141,7 @@ export default async function PreConstructionPage() {
 
       {/* ============= CONTACT FORM — above the global footer ============= */}
       <section id="contact-us" className="bg-env-bg-soft text-env-dark-1 py-20 md:py-28">
-        <div className="env-container-narrow mx-auto max-w-3xl text-center">
+        <div className="mx-auto max-w-3xl px-6 text-center">
           <h2 className="text-3xl md:text-5xl font-light tracking-tight">
             {page?.ctaHeading ?? 'Ground Breaking Starts Here'}
           </h2>
@@ -150,7 +150,7 @@ export default async function PreConstructionPage() {
               <PortableText value={page.ctaBody} />
             </div>
           )}
-          <div className="mt-12 mx-auto">
+          <div className="mt-12 flex justify-center">
             <ContactForm />
           </div>
         </div>

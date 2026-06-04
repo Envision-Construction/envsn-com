@@ -43,19 +43,31 @@ export function PreconSites({ services }: { services: PreconService[] }) {
   }, [openIdx])
 
   const openCard = (idx: number) => {
-    setOpenIdx(idx)
-    // Wait one frame for React to commit the open state, then explicitly
-    // scroll so the card's top edge lands right below the 60px sticky
-    // navbar. Manual window.scrollTo is more predictable than
-    // scrollIntoView + scroll-margin-top, which some browsers honor
-    // inconsistently with smooth behavior.
-    requestAnimationFrame(() => {
-      const el = cardRefs.current[idx]
-      if (!el) return
-      const rect = el.getBoundingClientRect()
-      const targetY = window.scrollY + rect.top - 60
-      window.scrollTo({ top: targetY, behavior: 'smooth' })
-    })
+    const el = cardRefs.current[idx]
+    if (!el) {
+      setOpenIdx(idx)
+      return
+    }
+    // Measure against the closed-state layout, then scroll the card's
+    // top edge to right below the 60px sticky navbar BEFORE flipping the
+    // open state. Scrolling first guarantees the card is properly framed
+    // when the height transition starts (no matter where the click came
+    // from). If we're already aligned within a couple of pixels, skip
+    // the scroll and open immediately.
+    const rect = el.getBoundingClientRect()
+    const targetY = Math.max(0, window.scrollY + rect.top - 60)
+    const delta = Math.abs(targetY - window.scrollY)
+
+    if (delta < 2) {
+      setOpenIdx(idx)
+      return
+    }
+
+    window.scrollTo({ top: targetY, behavior: 'smooth' })
+    // Approximate Chrome/Firefox smooth-scroll duration scales with the
+    // distance; cap at ~450ms so long scrolls aren't waiting too long.
+    const wait = Math.min(450, 180 + delta * 0.25)
+    window.setTimeout(() => setOpenIdx(idx), wait)
   }
 
   return (
