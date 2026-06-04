@@ -34,9 +34,9 @@ export async function Footer() {
 
   return (
     <footer className="env-footer bg-env-dark-1 text-white">
-      <div className="mx-auto w-full max-w-[1600px] px-6 py-16 grid gap-12 md:grid-cols-3 items-start text-center">
+      <div className="mx-auto w-full max-w-[1600px] px-6 py-16 grid gap-12 md:grid-cols-3 items-start">
         {/* Col 1 — logo + social + copyright */}
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-start">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/uploads/2024/05/logo_footer_prime.png"
@@ -45,7 +45,7 @@ export async function Footer() {
             height={40}
             className="h-10 w-auto env-footer-logo"
           />
-          <div className="mt-6 flex items-center justify-center gap-3">
+          <div className="mt-6 flex items-center justify-start gap-3">
             <a
               href="https://www.linkedin.com/company/envsn"
               target="_blank"
@@ -81,7 +81,7 @@ export async function Footer() {
         </div>
 
         {/* Col 2 — Quick Links */}
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-start">
           <h4 className="text-base font-semibold text-white">Quick Links</h4>
           <ul className="mt-4 space-y-2 text-sm text-neutral-300">
             <li>
@@ -108,7 +108,7 @@ export async function Footer() {
         </div>
 
         {/* Col 3 — Contact + IICRC badge */}
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-start">
           <h4 className="text-base font-semibold text-white">Contact Us</h4>
           <p className="mt-4 text-sm text-neutral-300">
             <a href={`tel:${phone.replace(/[^0-9A-Za-z]/g, '')}`} className="hover:text-white">
