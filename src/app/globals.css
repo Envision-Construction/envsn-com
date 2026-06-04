@@ -200,6 +200,15 @@ body {
   }
 }
 
+/* Desktop: halve the vertical padding on About / Diversity / Technology so
+ * the three culture sections sit closer together (was py-28 = 112px). */
+@media (min-width: 768px) {
+  .env-culture-section {
+    padding-top: 56px !important;
+    padding-bottom: 56px !important;
+  }
+}
+
 /* Wrapper used by <HeroTagline> client component. The JS sets transform
  * each scroll frame to keep the inner h1 visually centered in the
  * visible portion of the white section (between the navbar and the
@@ -319,7 +328,7 @@ body {
 .env-mobile-hamburger {
   width: 40px;
   height: 40px;
-  display: inline-flex;
+  display: none;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -327,6 +336,10 @@ body {
   background: transparent;
   border: 0;
   cursor: pointer;
+}
+
+@media (max-width: 767px) {
+  .env-mobile-hamburger { display: inline-flex; }
 }
 
 .env-mobile-hamburger > span {
