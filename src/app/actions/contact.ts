@@ -31,6 +31,10 @@ const ContactSchema = z.object({
   // Honeypot
   website: z.string().max(0, 'Bot detected').optional().or(z.literal('')),
   turnstileToken: z.string().min(1, 'CAPTCHA token missing'),
+  // Identifies which form on the site sent this submission
+  // ("Construction" from the homepage, "Preconstruction" from the
+  // pre-construction page). Optional so older clients still work.
+  source: z.string().max(60).optional().or(z.literal('')),
 })
 
 export type ContactState =
@@ -68,6 +72,7 @@ export async function submitContact(
     message: formData.get('message') ?? '',
     website: formData.get('website') ?? '',
     turnstileToken: formData.get('cf-turnstile-response') ?? '',
+    source: formData.get('source') ?? '',
   })
 
   if (!parsed.success) {
@@ -83,8 +88,17 @@ export async function submitContact(
     }
   }
 
-  const { firstName, lastName, email, phone, company, message, turnstileToken } =
-    parsed.data
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    company,
+    message,
+    turnstileToken,
+    source,
+  } = parsed.data
+  const formSource = source && source.trim() ? source.trim() : 'Construction'
 
   const captcha = await verifyTurnstile(turnstileToken)
   if (!captcha.success) {
@@ -107,7 +121,7 @@ export async function submitContact(
   }
 
   const fullName = `${firstName} ${lastName}`.trim()
-  const subject = `New inquiry from ${fullName}${company ? ` (${company})` : ''}`
+  const subject = `[${formSource}] New inquiry from ${fullName}${company ? ` (${company})` : ''}`
 
   const resend = new Resend(apiKey)
   const { error } = await resend.emails.send({
@@ -117,6 +131,7 @@ export async function submitContact(
     subject,
     text: [
       `New inquiry from envsn.com`,
+      `Source:  ${formSource}`,
       ``,
       `Name:    ${fullName}`,
       `Email:   ${email}`,
@@ -135,6 +150,7 @@ export async function submitContact(
       phone: phone || '',
       company: company || '',
       message,
+      source: formSource,
     }),
   })
 
@@ -207,6 +223,7 @@ function renderInquiryHtml(d: {
   phone: string
   company: string
   message: string
+  source: string
 }): string {
   const phoneCell = d.phone
     ? escapeHtml(d.phone)
@@ -246,8 +263,17 @@ function renderInquiryHtml(d: {
           </td>
         </tr>
 
+        <!-- Source badge — shows which form on the site produced this inquiry -->
         <tr>
-          <td style="padding:20px 40px 8px;">
+          <td style="padding:18px 40px 0;">
+            <span style="display:inline-block;padding:6px 12px;background:${ENVISION_LIGHT_GREEN};color:${ENVISION_GREEN};font-family:${ENVISION_FONT};font-size:11px;font-weight:700;line-height:1;text-transform:uppercase;letter-spacing:0.12em;border-radius:2px;">
+              ${escapeHtml(d.source)} form
+            </span>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:12px 40px 8px;">
             <h1 style="margin:0;font-family:${ENVISION_FONT};font-size:22px;font-weight:700;line-height:1.2;color:${ENVISION_DARK};letter-spacing:-0.01em;">
               New inquiry from ${escapeHtml(d.fullName)}
             </h1>

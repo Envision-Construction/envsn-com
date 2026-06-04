@@ -54,8 +54,14 @@ function cursorPositionAfterFormat(
 
 export function ContactForm({
   messageLabel = 'How can we help you?',
+  source = 'Construction',
 }: {
   messageLabel?: string
+  /** Tag identifying which form was submitted ("Construction" on the
+   * homepage, "Preconstruction" on /pre-construction). Travels through
+   * the server action into the email subject + body so leads are
+   * routable by origin. */
+  source?: string
 } = {}) {
   const [state, formAction, isPending] = useActionState(
     submitContact,
@@ -115,6 +121,9 @@ export function ContactForm({
           <input type="text" name="website" tabIndex={-1} autoComplete="off" />
         </label>
       </div>
+
+      {/* Form source — tells the server action / email which page sent it */}
+      <input type="hidden" name="source" value={source} />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field
