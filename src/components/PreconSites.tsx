@@ -18,11 +18,12 @@ export type PreconService = {
 
 const OPEN_MS = 750
 
-// Cubic ease-in-out — visually matches the height transition's
-// cubic-bezier(0.4, 0, 0.2, 1) closely enough that the scroll motion
-// and the panel growth feel like one coordinated animation.
-function easeInOutCubic(t: number) {
-  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+// Cubic ease-out — fast start, gentle settle. Mirrors the CSS
+// cubic-bezier(0.22, 1, 0.36, 1) used on the height transition, so the
+// scroll motion and the panel growth move at the same visible rate
+// from frame 0 (no "expand-first, then scroll" perception).
+function easeOutCubic(t: number) {
+  return 1 - Math.pow(1 - t, 3)
 }
 
 function animateScrollTo(targetY: number, duration: number) {
@@ -33,7 +34,7 @@ function animateScrollTo(targetY: number, duration: number) {
   const startTime = performance.now()
   const step = (now: number) => {
     const t = Math.min(1, (now - startTime) / duration)
-    const eased = easeInOutCubic(t)
+    const eased = easeOutCubic(t)
     window.scrollTo(0, startY + diff * eased)
     if (t < 1) requestAnimationFrame(step)
   }

@@ -796,9 +796,10 @@ body {
   display: block;
   background: #000;
   scroll-margin-top: 60px;
-  /* Longer + gentler easing (Material standard) so the height growth
-   * feels like a smooth glide rather than a snap-and-stop. */
-  transition: height 750ms cubic-bezier(0.4, 0, 0.2, 1);
+  /* Cubic ease-out — fast start, gentle settle. Matches the JS
+   * easeOutCubic that drives the page scroll, so both motions
+   * visibly start moving from frame 0 and decelerate together. */
+  transition: height 750ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: height;
 }
 
