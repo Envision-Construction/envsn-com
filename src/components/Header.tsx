@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
+import { MobileMenu } from './MobileMenu'
 import { SearchOverlay } from './SearchOverlay'
 
 type NavItem = { label: string; href: string; external?: boolean }
@@ -16,40 +17,16 @@ const NAV: NavItem[] = [
   { label: 'Careers', href: 'https://careers.envsn.com', external: true },
 ]
 
-/**
- * Site header — sticky, white, with logo / nav / Contact Us + search.
- * Client component because it owns the SearchOverlay open state and
- * the active-nav highlight that animates a green underline left→right
- * on the clicked item.
- *
- * Active nav resolution priority:
- *   1. Whatever the user most recently clicked (click state)
- *   2. The current pathname when the page first loads (so /pre-construction
- *      shows the Pre Construction link as active out of the gate)
- */
-
 export function Header() {
   const pathname = usePathname()
   const [searchOpen, setSearchOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [clickedNav, setClickedNav] = useState<string | null>(null)
 
-  // Pathname-based default on first render: highlight the nav item whose
-  // href matches the current route (ignoring the hash so /#culture maps
-  // to '/'). Cleared whenever the user navigates by clicking — clickedNav
-  // takes over after the first click.
   useEffect(() => {
     if (clickedNav !== null) return
-    const match = NAV.find((n) => {
-      if (n.external) return false
-      const path = n.href.split('#')[0] || '/'
-      return path === pathname
-    })
-    if (match && (pathname === '/pre-construction' || pathname === '/')) {
-      // Only auto-highlight Pre Construction on its own route; on '/' don't
-      // pre-select anything (every section anchor matches '/').
-      if (pathname === '/pre-construction' && match.label === 'Pre Construction') {
-        setClickedNav('Pre Construction')
-      }
+    if (pathname === '/pre-construction') {
+      setClickedNav('Pre Construction')
     }
   }, [pathname, clickedNav])
 
@@ -58,12 +35,17 @@ export function Header() {
   return (
     <>
       <header className="env-header sticky top-0 z-40 w-full bg-white/95 backdrop-blur border-b border-neutral-200">
-        <div className="env-header-container mx-auto max-w-[1520px] grid grid-cols-[1fr_auto_1fr] items-center px-6 h-[60px]">
-          {/* Column 1 — logo, right-aligned in its column so it sits close to the centered nav */}
+        <div className="env-header-container mx-auto max-w-[1520px] grid grid-cols-[1fr_auto_1fr] md:grid-cols-[1fr_auto_1fr] items-center px-6 h-[60px]">
+          {/* Column 1 — logo. Desktop: right-aligned w/ mr to sit near nav.
+              Mobile: left-aligned at the page edge. */}
           <Link
             href="/"
             aria-label="Envision Construction — Home"
-            className="env-header-logo flex-shrink-0 justify-self-end mr-12"
+            className="env-header-logo flex-shrink-0 justify-self-start md:justify-self-end md:mr-12"
+            onClick={() => {
+              setMobileMenuOpen(false)
+              setClickedNav(null)
+            }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -73,7 +55,7 @@ export function Header() {
             />
           </Link>
 
-          {/* Column 2 — nav, auto-width and sits perfectly centered on the page */}
+          {/* Column 2 — nav, desktop only */}
           <nav className="env-header-menu hidden md:flex items-center gap-8">
             {NAV.map((item) => {
               const isActive = activeLabel === item.label
@@ -107,11 +89,11 @@ export function Header() {
             })}
           </nav>
 
-          {/* Column 3 — Contact Us + search, right-aligned in its column */}
+          {/* Column 3 — Contact + search on desktop, hamburger on mobile */}
           <div className="env-header-menu-right flex items-center gap-3 justify-self-end">
             <Link
               href="/#contact-us"
-              className="rounded-full bg-env-green text-white text-sm font-semibold uppercase tracking-wider px-5 py-2.5 hover:bg-env-green-dark transition-colors"
+              className="hidden md:inline-flex rounded-full bg-env-green text-white text-sm font-semibold uppercase tracking-wider px-5 py-2.5 hover:bg-env-green-dark transition-colors"
             >
               Contact Us
             </Link>
@@ -120,7 +102,7 @@ export function Header() {
               aria-label={searchOpen ? 'Close search' : 'Search'}
               aria-expanded={searchOpen}
               onClick={() => setSearchOpen((v) => !v)}
-              className="env-header-search-icon-btn flex items-center justify-center w-10 h-10 rounded-full bg-black hover:bg-neutral-800 transition-colors"
+              className="hidden md:flex env-header-search-icon-btn items-center justify-center w-10 h-10 rounded-full bg-black hover:bg-neutral-800 transition-colors"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -129,11 +111,24 @@ export function Header() {
                 className="w-[18px] h-[18px]"
               />
             </button>
+            {/* Mobile hamburger — visible <=767px only */}
+            <button
+              type="button"
+              aria-label="Open menu"
+              aria-expanded={mobileMenuOpen}
+              onClick={() => setMobileMenuOpen(true)}
+              className="md:hidden env-mobile-hamburger"
+            >
+              <span aria-hidden></span>
+              <span aria-hidden></span>
+              <span aria-hidden></span>
+            </button>
           </div>
         </div>
       </header>
 
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
+      <MobileMenu open={mobileMenuOpen} nav={NAV} onClose={() => setMobileMenuOpen(false)} />
     </>
   )
 }

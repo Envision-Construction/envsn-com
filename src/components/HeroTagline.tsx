@@ -30,6 +30,15 @@ export function HeroTagline() {
       const rect = section.getBoundingClientRect()
       const viewportH = window.innerHeight
 
+      // Mobile: the hero section collapses to its compact natural height.
+      // Skip scroll-centering + fade logic entirely so the tagline just
+      // sits in the small padded band.
+      if (rect.height < 240) {
+        tracker.style.transform = ''
+        tracker.style.opacity = ''
+        return
+      }
+
       // Visible portion of the section, in viewport coords
       const visibleTop = Math.max(rect.top, NAVBAR_HEIGHT)
       const visibleBottom = Math.min(rect.bottom, viewportH)
