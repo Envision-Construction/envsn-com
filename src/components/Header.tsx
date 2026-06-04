@@ -59,17 +59,19 @@ export function Header() {
     <>
       <header className="env-header sticky top-0 z-40 w-full bg-white/95 backdrop-blur border-b border-neutral-200">
         <div className="env-header-container mx-auto max-w-[1520px] flex items-center justify-between px-6 h-[60px]">
-          <Link href="/" aria-label="Envision Construction — Home" className="env-header-logo flex-shrink-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/uploads/2024/05/logo-black_prime.png"
-              alt="Envision Construction"
-              className="h-8 w-auto"
-            />
-          </Link>
+          {/* Left group — logo + nav clustered together (was logo-left, nav-centered) */}
+          <div className="flex items-center gap-12">
+            <Link href="/" aria-label="Envision Construction — Home" className="env-header-logo flex-shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/uploads/2024/05/logo-black_prime.png"
+                alt="Envision Construction"
+                className="h-8 w-auto"
+              />
+            </Link>
 
-          <nav className="env-header-menu hidden md:flex items-center gap-8">
-            {NAV.map((item) => {
+            <nav className="env-header-menu hidden md:flex items-center gap-8">
+              {NAV.map((item) => {
               const isActive = activeLabel === item.label
               const className = `env-header-link text-sm uppercase tracking-wider text-neutral-800 hover:text-env-green transition-colors ${
                 isActive ? 'env-header-link--active' : ''
@@ -99,7 +101,8 @@ export function Header() {
                 </Link>
               )
             })}
-          </nav>
+            </nav>
+          </div>
 
           <div className="env-header-menu-right flex items-center gap-3">
             <Link
