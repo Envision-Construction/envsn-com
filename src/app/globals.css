@@ -221,7 +221,7 @@ body {
 
 .env-tiles-tile {
   position: relative;
-  height: 780px; /* 30% taller than the prior 600px */
+  height: 663px; /* 15% shorter than the prior 780px */
   overflow: hidden;
   color: white;
   cursor: pointer;
