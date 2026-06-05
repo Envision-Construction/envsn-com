@@ -15,11 +15,17 @@ const initialState: ContactState = { status: 'idle' }
 declare global {
   interface Window {
     turnstile?: {
-      render: (el: string | HTMLElement, opts: Record<string, unknown>) => void
+      render: (el: string | HTMLElement, opts: Record<string, unknown>) => string
+      remove: (id: string) => void
       reset: (id?: string) => void
     }
+    /** Global resolved by the Turnstile script once it's ready to render */
+    onloadTurnstileCallback?: () => void
   }
 }
+
+const TURNSTILE_SCRIPT_SRC =
+  'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback&render=explicit'
 
 /** Format US phone: (XXX) XXX-XXXX. Caps at 10 digits. */
 function formatPhone(raw: string): string {
@@ -70,18 +76,75 @@ export function ContactForm({
   const formRef = useRef<HTMLFormElement>(null)
   const phoneRef = useRef<HTMLInputElement>(null)
   const pendingCursor = useRef<number | null>(null)
+  const turnstileContainerRef = useRef<HTMLDivElement>(null)
+  const turnstileWidgetIdRef = useRef<string | null>(null)
   const [phone, setPhone] = useState('')
   const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
 
   useEffect(() => {
-    if (state.status !== 'idle' && typeof window !== 'undefined' && window.turnstile) {
-      window.turnstile.reset()
+    if (state.status !== 'idle' && typeof window !== 'undefined' && window.turnstile && turnstileWidgetIdRef.current) {
+      window.turnstile.reset(turnstileWidgetIdRef.current)
     }
     if (state.status === 'success' && formRef.current) {
       formRef.current.reset()
       setPhone('')
     }
   }, [state])
+
+  // Load the Turnstile API script once per page, then explicitly render
+  // the widget on every mount. Auto-discovery (class="cf-turnstile") only
+  // scans on initial script load — when this form unmounts/remounts from
+  // client-side navigation, the widget would otherwise disappear.
+  useEffect(() => {
+    if (!turnstileSiteKey) return
+    if (typeof window === 'undefined') return
+
+    const renderWidget = () => {
+      const container = turnstileContainerRef.current
+      if (!container || !window.turnstile) return
+      // If we somehow already have an id from a stale mount, drop it.
+      if (turnstileWidgetIdRef.current) {
+        window.turnstile.remove(turnstileWidgetIdRef.current)
+        turnstileWidgetIdRef.current = null
+      }
+      container.innerHTML = ''
+      turnstileWidgetIdRef.current = window.turnstile.render(container, {
+        sitekey: turnstileSiteKey,
+        theme: 'light',
+      })
+    }
+
+    if (window.turnstile) {
+      // Script already loaded by a previous mount — render immediately.
+      renderWidget()
+    } else {
+      // First time the script needs to load. Register a global callback
+      // it'll invoke once ready, then inject the script tag if missing.
+      window.onloadTurnstileCallback = renderWidget
+      const existing = document.querySelector<HTMLScriptElement>(
+        `script[src^="${TURNSTILE_SCRIPT_SRC.split('?')[0]}"]`,
+      )
+      if (!existing) {
+        const script = document.createElement('script')
+        script.src = TURNSTILE_SCRIPT_SRC
+        script.async = true
+        script.defer = true
+        document.head.appendChild(script)
+      }
+    }
+
+    // Clean up when the form unmounts so a remount draws a fresh widget.
+    return () => {
+      if (window.turnstile && turnstileWidgetIdRef.current) {
+        try {
+          window.turnstile.remove(turnstileWidgetIdRef.current)
+        } catch {
+          /* widget may already be gone — fine */
+        }
+        turnstileWidgetIdRef.current = null
+      }
+    }
+  }, [turnstileSiteKey])
 
   // Restore caret position after React re-renders the formatted phone value
   useLayoutEffect(() => {
@@ -211,19 +274,10 @@ export function ContactForm({
       </div>
 
       {turnstileSiteKey ? (
-        <>
-          <div
-            className="cf-turnstile"
-            data-sitekey={turnstileSiteKey}
-            data-theme="light"
-          />
-          {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-          <script
-            src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-            async
-            defer
-          />
-        </>
+        /* The Turnstile widget is injected here by window.turnstile.render()
+         * in the useEffect above — explicit render so it re-mounts cleanly
+         * on client-side navigation between forms. */
+        <div ref={turnstileContainerRef} />
       ) : (
         <p className="text-xs text-neutral-500 italic">
           CAPTCHA not configured. Set NEXT_PUBLIC_TURNSTILE_SITE_KEY to enable.
