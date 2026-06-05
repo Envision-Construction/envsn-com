@@ -4,17 +4,15 @@ import type { NextConfig } from "next";
  * Security headers applied to every response.
  *
  * - HSTS forces HTTPS for two years (preload-ready).
- * - X-Frame-Options + frame-ancestors block clickjacking.
+ * - X-Frame-Options blocks clickjacking.
  * - nosniff stops MIME-type confusion attacks.
  * - Referrer-Policy avoids leaking full URLs cross-origin.
  * - Permissions-Policy strips access to APIs we don't use (cam, mic, geo).
- * - CSP scopes asset loading to known origins:
- *     - Sanity CDN for images
- *     - Cloudflare Turnstile for the CAPTCHA widget
- *     - Resend's verification API
- *     - envsn.com + vercel.app for everything else
- *   Inline scripts/styles stay allowed because Next.js + Tailwind inject
- *   them at runtime. Tightening to nonces is a larger lift for later.
+ *
+ * Content-Security-Policy was tried with a strict allow-list and broke
+ * the Cloudflare Turnstile widget + Next.js server actions. Leaving CSP
+ * off for now — it needs careful per-route tuning (Studio + form pages
+ * each need different allowances) which is a larger follow-up.
  */
 const securityHeaders = [
   {
@@ -36,24 +34,6 @@ const securityHeaders = [
   {
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=(), payment=()",
-  },
-  {
-    key: "Content-Security-Policy",
-    value: [
-      "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://*.sanity.io",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "img-src 'self' data: blob: https://cdn.sanity.io https://*.sanity.io https://envsn.com https://*.vercel.app",
-      "font-src 'self' data: https://fonts.gstatic.com",
-      "connect-src 'self' https://*.sanity.io https://api.resend.com https://challenges.cloudflare.com https://vitals.vercel-insights.com",
-      "media-src 'self' https://envsn.com https://*.vercel.app",
-      "frame-src https://challenges.cloudflare.com",
-      "frame-ancestors 'none'",
-      "base-uri 'self'",
-      "form-action 'self'",
-      "object-src 'none'",
-      "upgrade-insecure-requests",
-    ].join("; "),
   },
 ];
 
