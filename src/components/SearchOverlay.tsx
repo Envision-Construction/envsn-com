@@ -26,17 +26,17 @@ const INDEX: Entry[] = [
   },
   {
     title: 'About Us',
-    href: '/#culture',
+    href: '/#about-us',
     keywords: ['about', 'culture'],
   },
   {
     title: 'Diversity',
-    href: '/#culture',
+    href: '/#diversity',
     keywords: ['diversity', 'minority', 'minority owned'],
   },
   {
     title: 'Technology',
-    href: '/#culture',
+    href: '/#technology',
     keywords: ['technology', 'tech', 'innovation'],
   },
   {

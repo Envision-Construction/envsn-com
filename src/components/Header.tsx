@@ -10,7 +10,7 @@ import { SearchOverlay } from './SearchOverlay'
 type NavItem = { label: string; href: string; external?: boolean }
 
 const NAV: NavItem[] = [
-  { label: 'Culture', href: '/#culture' },
+  { label: 'Culture', href: '/#about-us' },
   { label: 'Expertise', href: '/#expertise' },
   { label: 'People', href: '/#people' },
   { label: 'Pre Construction', href: '/pre-construction' },

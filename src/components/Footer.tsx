@@ -85,7 +85,7 @@ export async function Footer() {
           <h4 className="text-base font-semibold text-white">Quick Links</h4>
           <ul className="mt-4 space-y-2 text-sm text-neutral-300">
             <li>
-              <Link href="/#culture" className="hover:text-white">
+              <Link href="/#about-us" className="hover:text-white">
                 Culture
               </Link>
             </li>

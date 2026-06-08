@@ -191,6 +191,13 @@ body {
   }
 }
 
+/* Hash-anchor offset — when /#about-us, /#diversity, /#technology
+ * scrolls into view, leave 60px clear at the top for the sticky navbar
+ * so the section heading isn't tucked behind it. */
+.env-culture-section {
+  scroll-margin-top: 60px;
+}
+
 /* Mobile-only culture-section overrides — reduce vertical padding and the
  * stack gap between the paragraph and the image by ~60% so About / Diversity
  * / Technology sit closer together and feel tighter on small screens. */

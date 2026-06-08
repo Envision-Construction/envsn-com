@@ -141,7 +141,7 @@ export default async function HomePage() {
       {/* ============= ABOUT (image+text split) ============= */}
       <ScrollFade>
         <CultureSection
-          id="culture"
+          id="about-us"
           eyebrow={page?.aboutEyebrow ?? 'Culture'}
           heading={page?.aboutHeading ?? 'About Us'}
           image={page?.aboutImageUrl}
@@ -152,6 +152,7 @@ export default async function HomePage() {
       {/* ============= DIVERSITY (image+text split) ============= */}
       <ScrollFade>
         <CultureSection
+          id="diversity"
           eyebrow={page?.diversityEyebrow ?? 'Culture'}
           heading={page?.diversityHeading ?? 'Diversity'}
           image={page?.diversityImageUrl ?? '/uploads/2024/05/culture-diversity-f.png'}
@@ -161,7 +162,7 @@ export default async function HomePage() {
 
       {/* ============= TECHNOLOGY (text left, carousel right — matches Diversity/About layout) ============= */}
       <ScrollFade>
-        <section className="env-culture-section bg-white py-20 md:py-28">
+        <section id="technology" className="env-culture-section bg-white py-20 md:py-28">
           <div className="env-container-narrow">
             <div className="env-section-head">
               <p className="env-eyebrow">{page?.technologyEyebrow ?? 'Culture'}</p>
