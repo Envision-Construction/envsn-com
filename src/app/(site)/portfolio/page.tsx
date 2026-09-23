@@ -26,7 +26,7 @@ type PortfolioProjectDoc = {
 }
 
 // Built-in project set, sourced from the Envision Statement of Qualifications
-// (SOQ Rev. 7). Sanity `portfolioProject` documents take precedence once any
+// (SOQ Rev. 7, 2026-02-27 and 2025-09-30 editions). Sanity `portfolioProject` documents take precedence once any
 // exist; until then this list is what renders. Contract values are
 // intentionally left off the public site.
 const PROJECTS: PortfolioProject[] = [
@@ -59,34 +59,6 @@ const PROJECTS: PortfolioProject[] = [
     imageUrl: '/uploads/2026/09/storage-sense-macon.jpg',
   },
   {
-    id: 'ss-peachtree-valley',
-    sector: 'Self Storage',
-    name: 'Peachtree Valley Storage',
-    location: 'Midtown Atlanta, GA',
-    description:
-      'Ground-up, in-fill, high-rise Class A storage facility on a quarter-acre site. The structure doubles as a retaining wall for a municipal street and enabled the expansion of the neighboring parking structure.',
-    stats: [
-      { value: '125K', label: 'SF' },
-      { value: 'High-rise', label: 'Class A' },
-      { value: '0.24', label: 'Acres' },
-    ],
-    imageUrl: '/uploads/2026/09/peachtree-valley-storage.jpg',
-  },
-  {
-    id: 'ss-fairhope',
-    sector: 'Self Storage',
-    name: 'Fairhope Self-Storage',
-    location: 'Fairhope, AL',
-    description:
-      'New ground-up Class A self-storage facility engineered to withstand hurricanes, built to Miami-Dade standards for a Category 1 hurricane-rated wind zone.',
-    stats: [
-      { value: '65K', label: 'SF' },
-      { value: 'Class A', label: 'Facility' },
-      { value: 'Cat 1', label: 'Wind rated' },
-    ],
-    imageUrl: '/uploads/2026/09/fairhope-self-storage.jpg',
-  },
-  {
     id: 'in-xpo-west-columbia',
     sector: 'Industrial',
     name: 'XPO Logistics',
@@ -113,6 +85,60 @@ const PROJECTS: PortfolioProject[] = [
       { value: '3.6K', label: 'SF dock office' },
     ],
     imageUrl: '/uploads/2026/09/xpo-columbus.jpg',
+  },
+  {
+    id: 'ho-enspire-mercantile',
+    sector: 'Hospitality',
+    name: 'Enspire Mercantile',
+    location: 'Atlanta, GA',
+    description:
+      'Renovation of a one-story historic building into a film and event production venue: selective demolition, accessibility upgrades, new partitions, ceilings and rated egress corridors, plus green rooms, restrooms, HVAC, LED lighting and upgraded electrical and plumbing.',
+    stats: [
+      { value: '21K', label: 'SF' },
+      { value: '1', label: 'Story' },
+      { value: 'Historic', label: 'Building' },
+    ],
+    imageUrl: '/uploads/2026/09/enspire-mercantile.jpg',
+  },
+  {
+    id: 're-barnes-noble',
+    sector: 'Retail',
+    name: 'Barnes & Noble',
+    description:
+      'Shell building renovation and tenant up-fit for a retail space: reworked suite footprint, new storefront entry doors and glazing, new RTUs and curbs, matched exterior finishes and utility modifications and extensions.',
+    stats: [
+      { value: '15.5K', label: 'SF' },
+      { value: 'Shell + TI', label: 'Scope' },
+      { value: 'New', label: 'Storefront' },
+    ],
+    imageUrl: '/uploads/2026/09/barnes-noble.jpg',
+  },
+  {
+    id: 're-midtown-beach-club',
+    sector: 'Retail',
+    name: 'Midtown Beach Club',
+    description:
+      'Commercial tenant up-fit of a pre-war building: resurfaced historic materials, dated MEP brought up to code, and hospitality-grade finishes installed while preserving the historic character of the space.',
+    stats: [
+      { value: '4.2K', label: 'SF' },
+      { value: 'Pre-war', label: 'Building' },
+      { value: 'Up-fit', label: 'Scope' },
+    ],
+    imageUrl: '/uploads/2026/09/midtown-beach-club.jpg',
+  },
+  {
+    id: 're-onlyoga',
+    sector: 'Retail',
+    name: 'onlYoga',
+    location: 'Atlanta, GA',
+    description:
+      'Brand-new retail tenant up-fit for a yoga studio, taken over in an incomplete state and requiring extensive clean-up after the previous contractor ran into difficulties.',
+    stats: [
+      { value: '2.2K', label: 'SF' },
+      { value: 'Takeover', label: 'Project type' },
+      { value: 'Up-fit', label: 'Scope' },
+    ],
+    imageUrl: '/uploads/2026/09/onlyoga.jpg',
   },
 ]
 
@@ -165,10 +191,6 @@ export default async function PortfolioPage({
       <section id="projects" className="bg-white py-16 md:py-20">
         <div className="env-container-narrow">
           <PortfolioGrid projects={projects} sectors={SECTORS} initialSector={initialSector} />
-          <p className="mt-8 text-xs leading-relaxed text-neutral-500">
-            Peachtree Valley Storage and Fairhope Self-Storage showcase recent project
-            experience of the Envision Construction leadership team.
-          </p>
         </div>
       </section>
 
