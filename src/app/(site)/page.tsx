@@ -88,6 +88,7 @@ const FALLBACK_SECTORS = [
   { name: 'Site Development', iconPath: '/uploads/2025/10/Envision-Icons-Iso-04-Site-Development.png' },
   { name: 'Self Storage', iconPath: '/uploads/2025/10/Envision-Icons-Iso-05-Self-Storage.png' },
   { name: 'Retail', iconPath: '/uploads/2025/10/Envision-Icons-Iso-06-Retail.png' },
+  { name: 'Government', iconPath: '/uploads/2025/10/Envision-Icons-Iso-07-Government.png' },
 ]
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -206,9 +207,9 @@ export default async function HomePage() {
               <PortableTextOrFallback value={page?.expertiseBody} fallback="" />
             </div>
 
-            <div className="mt-12 grid gap-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+            <div className="mt-12 flex flex-wrap justify-center gap-8">
               {sectors.map((s) => (
-                <div key={s.name} className="text-center">
+                <div key={s.name} className="w-[calc(50%-1rem)] text-center md:w-36">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={s.iconPath} alt="" className="mx-auto h-24 w-24 object-contain" />
                   <p className="mt-3 text-sm font-medium text-neutral-800">{s.name}</p>
