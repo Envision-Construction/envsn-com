@@ -207,12 +207,12 @@ export default async function HomePage() {
               <PortableTextOrFallback value={page?.expertiseBody} fallback="" />
             </div>
 
-            <div className="mt-12 flex flex-wrap justify-center gap-8">
+            <div className="mt-12 flex flex-wrap justify-center gap-8 md:flex-nowrap md:justify-between md:gap-0">
               {sectors.map((s) => (
-                <div key={s.name} className="w-[calc(50%-1rem)] text-center md:w-36">
+                <div key={s.name} className="w-[calc(50%-1rem)] text-center md:w-24">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={s.iconPath} alt="" className="mx-auto h-24 w-24 object-contain" />
-                  <p className="mt-3 text-sm font-medium text-neutral-800">{s.name}</p>
+                  <p className="mt-3 text-sm font-medium text-neutral-800 md:whitespace-nowrap">{s.name}</p>
                 </div>
               ))}
             </div>
