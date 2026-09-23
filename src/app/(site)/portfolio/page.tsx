@@ -25,235 +25,94 @@ type PortfolioProjectDoc = {
   imageUrl?: string
 }
 
-// Placeholder projects — two per segment — so the page demonstrates the
-// layout before real jobs and photos are entered in Sanity. Photos are
-// reused from elsewhere on the site. Every entry is flagged `sample` so the
-// card shows a small "Sample" badge; the flag (and this list) go away once
-// portfolioProject documents exist.
-const SAMPLE_PROJECTS: PortfolioProject[] = [
+// Built-in project set, sourced from the Envision Statement of Qualifications
+// (SOQ Rev. 7). Sanity `portfolioProject` documents take precedence once any
+// exist; until then this list is what renders. Contract values are
+// intentionally left off the public site.
+const PROJECTS: PortfolioProject[] = [
   {
-    id: 'mf-1',
-    sample: true,
-    sector: 'Multifamily',
-    name: 'Alston Commons',
-    location: 'Atlanta, GA',
-    completed: '2024',
+    id: 'ss-storagemax-flowood',
+    sector: 'Self Storage',
+    name: 'StorageMax',
+    location: 'Flowood, MS',
     description:
-      'Four-story wrap community with a structured parking deck, resort-style amenity courtyard and 12,000 SF of ground-floor retail.',
+      'New ground-up, three-story climate-controlled facility supplementing four existing drive-up buildings, adding 556 units and nearly 70,000 SF of storage to the site.',
     stats: [
-      { value: '286', label: 'Units' },
-      { value: '4', label: 'Stories' },
-      { value: '18 mo', label: 'Schedule' },
+      { value: '105K', label: 'SF' },
+      { value: '556', label: 'Climate units' },
+      { value: '3', label: 'Stories' },
     ],
-    imageUrl: '/uploads/2024/05/2961-Alston-SD-Model-lvl1.jpg',
+    imageUrl: '/uploads/2026/09/storagemax-flowood.jpg',
   },
   {
-    id: 'mf-2',
-    sample: true,
-    sector: 'Multifamily',
-    name: 'Riverbend Flats',
-    location: 'Chattanooga, TN',
-    completed: '2023',
+    id: 'ss-storage-sense-macon',
+    sector: 'Self Storage',
+    name: 'Storage Sense',
+    location: 'Macon, GA',
     description:
-      'Garden-style community across nine residential buildings and a clubhouse, delivered in three phased turnovers to start leasing early.',
+      'Full retrofit of an existing warehouse on a 7-acre lot into a two-story storage facility with 575 climate-controlled units and more than 63,000 SF of rentable storage.',
     stats: [
-      { value: '212', label: 'Units' },
-      { value: '9', label: 'Buildings' },
-      { value: '3', label: 'Phases' },
+      { value: '85K', label: 'SF' },
+      { value: '575', label: 'Climate units' },
+      { value: '7', label: 'Acres' },
     ],
-    imageUrl: '/uploads/2024/05/Homepage_Drone.jpg',
+    imageUrl: '/uploads/2026/09/storage-sense-macon.jpg',
   },
   {
-    id: 'ho-1',
-    sample: true,
-    sector: 'Hospitality',
-    name: 'Airport District Select-Service Hotel',
-    location: 'Atlanta, GA',
-    completed: '2023',
+    id: 'ss-peachtree-valley',
+    sector: 'Self Storage',
+    name: 'Peachtree Valley Storage',
+    location: 'Midtown Atlanta, GA',
     description:
-      'Five-story select-service hotel built to brand prototype with a rooftop bar, fitness center and 3,200 SF of meeting space.',
+      'Ground-up, in-fill, high-rise Class A storage facility on a quarter-acre site. The structure doubles as a retaining wall for a municipal street and enabled the expansion of the neighboring parking structure.',
     stats: [
-      { value: '118', label: 'Keys' },
-      { value: '5', label: 'Stories' },
-      { value: '14 mo', label: 'Schedule' },
+      { value: '125K', label: 'SF' },
+      { value: '10', label: 'Stories' },
+      { value: '0.24', label: 'Acres' },
     ],
-    imageUrl: '/uploads/2024/05/envision-image3-989695.png',
+    imageUrl: '/uploads/2026/09/peachtree-valley-storage.jpg',
   },
   {
-    id: 'ho-2',
-    sample: true,
-    sector: 'Hospitality',
-    name: 'Extended-Stay Hotel',
-    location: 'Greenville, SC',
-    completed: '2024',
+    id: 'ss-fairhope',
+    sector: 'Self Storage',
+    name: 'Fairhope Self-Storage',
+    location: 'Fairhope, AL',
     description:
-      'Four-story extended-stay hotel with full in-room kitchens, delivered ahead of the brand opening date on a tight urban site.',
+      'New ground-up Class A self-storage facility engineered to withstand hurricanes, built to Miami-Dade standards for a Category 1 hurricane-rated wind zone.',
     stats: [
-      { value: '96', label: 'Keys' },
-      { value: '4', label: 'Stories' },
-      { value: '62K', label: 'SF' },
+      { value: '65K', label: 'SF' },
+      { value: 'Class A', label: 'Facility' },
+      { value: 'Cat 1', label: 'Wind rated' },
     ],
-    imageUrl: '/uploads/2024/05/bg-img-home-section-3-1-778519.jpg',
+    imageUrl: '/uploads/2026/09/fairhope-self-storage.jpg',
   },
   {
-    id: 'in-1',
-    sample: true,
+    id: 'in-xpo-west-columbia',
     sector: 'Industrial',
-    name: 'Northgate Logistics Center',
+    name: 'XPO Logistics',
+    location: 'West Columbia, SC',
+    description:
+      'Renovation and expansion of an operating logistics terminal: 14,200 SF of existing space renovated plus an 18,000 SF addition, for 85 dock doors and 3,200 SF of renovated office.',
+    stats: [
+      { value: '32K', label: 'SF' },
+      { value: '85', label: 'Dock doors' },
+      { value: '18K', label: 'SF addition' },
+    ],
+    imageUrl: '/uploads/2026/09/xpo-west-columbia.jpg',
+  },
+  {
+    id: 'in-xpo-columbus',
+    sector: 'Industrial',
+    name: 'XPO Logistics',
     location: 'Columbus, OH',
-    completed: '2024',
     description:
-      "Cross-dock tilt-wall distribution center with 40' clear height, 90 dock doors and ESFR sprinklers, built speculative and leased before turnover.",
+      'Dock addition to an existing 164,300 SF logistics facility with an enclosed dock office, new foundations and structural framing, full MEP and fire protection, life-safety and ADA upgrades, and site paving, grading and drainage.',
     stats: [
-      { value: '412K', label: 'SF' },
-      { value: "40'", label: 'Clear' },
-      { value: '90', label: 'Dock doors' },
+      { value: '74.1K', label: 'SF addition' },
+      { value: '164K', label: 'SF facility' },
+      { value: '3.6K', label: 'SF dock office' },
     ],
-    imageUrl: '/uploads/2024/05/header_bkd.jpg',
-  },
-  {
-    id: 'in-2',
-    sample: true,
-    sector: 'Industrial',
-    name: 'Flex Industrial Park, Phase II',
-    location: 'Charlotte, NC',
-    completed: '2023',
-    description:
-      'Three rear-load flex buildings with demisable bays from 6,000 SF, shared truck courts and full site infrastructure.',
-    stats: [
-      { value: '168K', label: 'SF' },
-      { value: '3', label: 'Buildings' },
-      { value: '11 mo', label: 'Schedule' },
-    ],
-    imageUrl: '/uploads/2024/05/commercial-bk.png',
-  },
-  {
-    id: 'sd-1',
-    sample: true,
-    sector: 'Site Development',
-    name: 'Highway 20 Commerce Park Sitework',
-    location: 'Cumming, GA',
-    completed: '2024',
-    description:
-      'Mass grading, site balancing and wet/dry utilities for a 64-acre commerce park, with drone-surveyed earthwork verified weekly.',
-    stats: [
-      { value: '64', label: 'Acres' },
-      { value: '410K', label: 'CY moved' },
-      { value: '7 mo', label: 'Schedule' },
-    ],
-    imageUrl: '/uploads/2024/05/Homepage_Drone.jpg',
-  },
-  {
-    id: 'sd-2',
-    sample: true,
-    sector: 'Site Development',
-    name: 'Lakeside Parkway Extension',
-    location: 'Gainesville, GA',
-    completed: '2023',
-    description:
-      'New 1.8-mile parkway with two signalized intersections, regional stormwater ponds and utility corridors serving three future pads.',
-    stats: [
-      { value: '1.8 mi', label: 'Roadway' },
-      { value: '2', label: 'Signals' },
-      { value: '3', label: 'Pads served' },
-    ],
-    imageUrl: '/uploads/2024/05/preconsteuction-bk.png',
-  },
-  {
-    id: 'ss-1',
-    sample: true,
-    sector: 'Self Storage',
-    name: 'Peachtree Climate-Controlled Storage',
-    location: 'Peachtree Corners, GA',
-    completed: '2024',
-    description:
-      'Four-story climate-controlled facility with a ground-floor showroom, two freight elevators and covered drive-through loading.',
-    stats: [
-      { value: '108K', label: 'SF' },
-      { value: '812', label: 'Units' },
-      { value: '4', label: 'Stories' },
-    ],
-    imageUrl: '/uploads/2024/05/architectural-bk.png',
-  },
-  {
-    id: 'ss-2',
-    sample: true,
-    sector: 'Self Storage',
-    name: 'Midtown Drive-Up Storage',
-    location: 'Nashville, TN',
-    completed: '2023',
-    description:
-      'Single-story drive-up storage across six buildings with gated access, LED site lighting and an on-site management office.',
-    stats: [
-      { value: '62K', label: 'SF' },
-      { value: '6', label: 'Buildings' },
-      { value: '9 mo', label: 'Schedule' },
-    ],
-    imageUrl: '/uploads/2024/05/bg-img-home-section-3-1-778519.jpg',
-  },
-  {
-    id: 're-1',
-    sample: true,
-    sector: 'Retail',
-    name: 'Village Center Shops',
-    location: 'Alpharetta, GA',
-    completed: '2024',
-    description:
-      'Ground-up neighborhood center with twelve in-line tenants, two restaurant end caps with patios and a coordinated multi-tenant opening.',
-    stats: [
-      { value: '48K', label: 'SF' },
-      { value: '12', label: 'Tenants' },
-      { value: '10 mo', label: 'Schedule' },
-    ],
-    imageUrl: '/uploads/2024/05/envision-image3-989695.png',
-  },
-  {
-    id: 're-2',
-    sample: true,
-    sector: 'Retail',
-    name: 'Grocery-Anchored Retail Pad',
-    location: 'Birmingham, AL',
-    completed: '2023',
-    description:
-      'Shell and site delivery for a grocery-anchored outparcel, including a drive-through pharmacy lane and shared-access improvements.',
-    stats: [
-      { value: '22K', label: 'SF' },
-      { value: '1', label: 'Anchor' },
-      { value: '8 mo', label: 'Schedule' },
-    ],
-    imageUrl: '/uploads/2024/05/commercial-bk.png',
-  },
-  {
-    id: 'go-1',
-    sample: true,
-    sector: 'Government',
-    name: 'County Fire Station No. 7',
-    location: 'Forsyth County, GA',
-    completed: '2024',
-    description:
-      'Three-bay fire station with dormitories, training tower and emergency generator, delivered under a competitively bid public contract.',
-    stats: [
-      { value: '14.5K', label: 'SF' },
-      { value: '3', label: 'Bays' },
-      { value: '13 mo', label: 'Schedule' },
-    ],
-    imageUrl: '/uploads/2024/05/header_bkd.jpg',
-  },
-  {
-    id: 'go-2',
-    sample: true,
-    sector: 'Government',
-    name: 'Municipal Public Works Facility',
-    location: 'Marietta, GA',
-    completed: '2023',
-    description:
-      'Administrative offices, heavy-equipment maintenance bays and covered fleet storage on a consolidated city operations campus.',
-    stats: [
-      { value: '38K', label: 'SF' },
-      { value: '6', label: 'Maint. bays' },
-      { value: '12 mo', label: 'Schedule' },
-    ],
-    imageUrl: '/uploads/2024/05/2961-Alston-SD-Model-lvl1.jpg',
+    imageUrl: '/uploads/2026/09/xpo-columbus.jpg',
   },
 ]
 
@@ -275,7 +134,7 @@ async function getProjects(): Promise<PortfolioProject[]> {
         .map((s) => ({ label: s.label ?? '', value: s.value ?? '' })),
       imageUrl: d.imageUrl,
     }))
-  return real.length > 0 ? real : SAMPLE_PROJECTS
+  return real.length > 0 ? real : PROJECTS
 }
 
 export default async function PortfolioPage({
@@ -306,6 +165,10 @@ export default async function PortfolioPage({
       <section id="projects" className="bg-white py-16 md:py-20">
         <div className="env-container-narrow">
           <PortfolioGrid projects={projects} sectors={SECTORS} initialSector={initialSector} />
+          <p className="mt-8 text-xs leading-relaxed text-neutral-500">
+            Peachtree Valley Storage and Fairhope Self-Storage showcase recent project
+            experience of the Envision Construction leadership team.
+          </p>
         </div>
       </section>
 
