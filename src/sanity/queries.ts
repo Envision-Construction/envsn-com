@@ -70,3 +70,11 @@ export const preConstructionPageQuery = /* groq */ `
     "ogImageUrl": ogImage.asset->url
   }
 `
+
+export const portfolioProjectsQuery = /* groq */ `
+  *[_type == "portfolioProject"] | order(featured desc, order asc, name asc) {
+    _id, name, sector, location, completed, description,
+    stats[]{ label, value },
+    "imageUrl": image.asset->url
+  }
+`

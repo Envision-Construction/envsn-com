@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useEffect } from 'react'
 
-type NavItem = { label: string; href: string; external?: boolean; placeholder?: boolean }
+type NavItem = { label: string; href: string; external?: boolean }
 
 /**
  * Mobile slide-in menu — exposes the navbar items plus the Contact Us CTA.
@@ -56,20 +56,7 @@ export function MobileMenu({
       </div>
       <nav className="env-mobile-menu-nav">
         {nav.map((item) =>
-          item.placeholder ? (
-            <a
-              key={item.label}
-              href={item.href}
-              aria-disabled="true"
-              onClick={(e) => {
-                e.preventDefault()
-                onClose()
-              }}
-              className="env-mobile-menu-link"
-            >
-              {item.label}
-            </a>
-          ) : item.external ? (
+          item.external ? (
             <a
               key={item.label}
               href={item.href}

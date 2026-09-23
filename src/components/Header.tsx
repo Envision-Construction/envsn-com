@@ -7,15 +7,14 @@ import { useEffect, useState } from 'react'
 import { MobileMenu } from './MobileMenu'
 import { SearchOverlay } from './SearchOverlay'
 
-type NavItem = { label: string; href: string; external?: boolean; placeholder?: boolean }
+type NavItem = { label: string; href: string; external?: boolean }
 
 const NAV: NavItem[] = [
   { label: 'Culture', href: '/#about-us' },
   { label: 'Expertise', href: '/#expertise' },
   { label: 'People', href: '/#people' },
   { label: 'Pre Construction', href: '/pre-construction' },
-  // Placeholder until the Portfolio page exists — renders in the nav but goes nowhere.
-  { label: 'Portfolio', href: '#', placeholder: true },
+  { label: 'Portfolio', href: '/portfolio' },
   { label: 'Careers', href: 'https://careers.envsn.com', external: true },
 ]
 
@@ -29,6 +28,8 @@ export function Header() {
     if (clickedNav !== null) return
     if (pathname === '/pre-construction') {
       setClickedNav('Pre Construction')
+    } else if (pathname === '/portfolio') {
+      setClickedNav('Portfolio')
     }
   }, [pathname, clickedNav])
 
@@ -64,19 +65,6 @@ export function Header() {
               const className = `env-header-link text-sm uppercase tracking-wider text-neutral-800 hover:text-env-green transition-colors ${
                 isActive ? 'env-header-link--active' : ''
               }`
-              if (item.placeholder) {
-                return (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    aria-disabled="true"
-                    className={className}
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    {item.label}
-                  </a>
-                )
-              }
               if (item.external) {
                 return (
                   <a

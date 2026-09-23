@@ -5,6 +5,7 @@ import { homePage } from './homePage'
 import { preConstructionPage } from './preConstructionPage'
 import { teamMember } from './teamMember'
 import { sector } from './sector'
+import { portfolioProject } from './portfolioProject'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   // Singletons
@@ -14,4 +15,5 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   // Repeatable documents
   teamMember,
   sector,
+  portfolioProject,
 ]

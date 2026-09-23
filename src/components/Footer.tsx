@@ -104,6 +104,11 @@ export async function Footer() {
                 Pre Construction
               </Link>
             </li>
+            <li>
+              <Link href="/portfolio" className="hover:text-white">
+                Portfolio
+              </Link>
+            </li>
           </ul>
         </div>
 
