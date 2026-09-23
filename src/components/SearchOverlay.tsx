@@ -50,6 +50,11 @@ const INDEX: Entry[] = [
     keywords: ['team', 'people', 'leadership', 'executives'],
   },
   {
+    title: 'Portfolio',
+    href: '/portfolio',
+    keywords: ['portfolio', 'projects', 'completed', 'work', 'multifamily', 'hospitality', 'industrial', 'site development', 'self storage', 'retail', 'government'],
+  },
+  {
     title: 'Pre Construction Services',
     href: '/pre-construction',
     keywords: ['preconstruction', 'pre construction', 'site planning'],

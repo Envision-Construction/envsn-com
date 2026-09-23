@@ -14,6 +14,7 @@ const NAV: NavItem[] = [
   { label: 'Expertise', href: '/#expertise' },
   { label: 'People', href: '/#people' },
   { label: 'Pre Construction', href: '/pre-construction' },
+  { label: 'Portfolio', href: '/portfolio' },
   { label: 'Careers', href: 'https://careers.envsn.com', external: true },
 ]
 
@@ -27,6 +28,8 @@ export function Header() {
     if (clickedNav !== null) return
     if (pathname === '/pre-construction') {
       setClickedNav('Pre Construction')
+    } else if (pathname === '/portfolio') {
+      setClickedNav('Portfolio')
     }
   }, [pathname, clickedNav])
 

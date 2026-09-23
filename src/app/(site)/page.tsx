@@ -7,6 +7,7 @@ import { ExecutiveTeam } from '@/components/ExecutiveTeam'
 import { HeroTagline } from '@/components/HeroTagline'
 import { ScrollFade } from '@/components/ScrollFade'
 import { TechnologyCarousel } from '@/components/TechnologyCarousel'
+import { SECTORS } from '@/lib/sectors'
 import { client } from '@/sanity/client'
 import { homePageQuery } from '@/sanity/queries'
 
@@ -81,14 +82,6 @@ async function getHomePage(): Promise<HomePage> {
   return client.fetch<HomePage>(homePageQuery).catch(() => null)
 }
 
-const FALLBACK_SECTORS = [
-  { name: 'Multifamily', iconPath: '/uploads/2025/10/Envision-Icons-Iso-01-Multifamily.png' },
-  { name: 'Hospitality', iconPath: '/uploads/2025/10/Envision-Icons-Iso-02-Hospitality.png' },
-  { name: 'Industrial', iconPath: '/uploads/2025/10/Envision-Icons-Iso-03-Industrial.png' },
-  { name: 'Site Development', iconPath: '/uploads/2025/10/Envision-Icons-Iso-04-Site-Development.png' },
-  { name: 'Self Storage', iconPath: '/uploads/2025/10/Envision-Icons-Iso-05-Self-Storage.png' },
-  { name: 'Retail', iconPath: '/uploads/2025/10/Envision-Icons-Iso-06-Retail.png' },
-]
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getHomePage()
@@ -108,7 +101,7 @@ export default async function HomePage() {
           name: s.name ?? '',
           iconPath: s.iconUrl ?? '',
         }))
-      : FALLBACK_SECTORS
+      : SECTORS
 
   const technologyFeatures = page?.technologyFeatures?.map((f) => ({
     title: f.title ?? '',
@@ -206,12 +199,12 @@ export default async function HomePage() {
               <PortableTextOrFallback value={page?.expertiseBody} fallback="" />
             </div>
 
-            <div className="mt-12 grid gap-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+            <div className="mt-12 flex flex-wrap justify-center gap-8 md:flex-nowrap md:justify-between md:gap-0">
               {sectors.map((s) => (
-                <div key={s.name} className="text-center">
+                <div key={s.name} className="w-[calc(50%-1rem)] text-center md:w-24">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={s.iconPath} alt="" className="mx-auto h-24 w-24 object-contain" />
-                  <p className="mt-3 text-sm font-medium text-neutral-800">{s.name}</p>
+                  <p className="mt-3 text-sm font-medium text-neutral-800 md:whitespace-nowrap">{s.name}</p>
                 </div>
               ))}
             </div>
