@@ -67,7 +67,7 @@ const PROJECTS: PortfolioProject[] = [
       'Ground-up, in-fill, high-rise Class A storage facility on a quarter-acre site. The structure doubles as a retaining wall for a municipal street and enabled the expansion of the neighboring parking structure.',
     stats: [
       { value: '125K', label: 'SF' },
-      { value: '10', label: 'Stories' },
+      { value: 'High-rise', label: 'Class A' },
       { value: '0.24', label: 'Acres' },
     ],
     imageUrl: '/uploads/2026/09/peachtree-valley-storage.jpg',
@@ -90,7 +90,7 @@ const PROJECTS: PortfolioProject[] = [
     id: 'in-xpo-west-columbia',
     sector: 'Industrial',
     name: 'XPO Logistics',
-    location: 'West Columbia, SC',
+    location: 'Columbia, SC',
     description:
       'Renovation and expansion of an operating logistics terminal: 14,200 SF of existing space renovated plus an 18,000 SF addition, for 85 dock doors and 3,200 SF of renovated office.',
     stats: [
@@ -153,10 +153,10 @@ export default async function PortfolioPage({
           <p className="env-eyebrow">Portfolio</p>
           <h1>Built Across Every Segment</h1>
           <p className="env-portfolio-hero-body">
-            From podium multifamily to public-safety facilities, every project
-            we deliver runs on the same disciplined process: transparent
-            pricing, technology-driven planning and a team that sweats the
-            details. Filter by segment to see how that plays out on the ground.
+            Every project we deliver runs on the same disciplined process:
+            transparent pricing, technology-driven planning and a team that
+            sweats the details. Filter by segment to see how that plays out on
+            the ground.
           </p>
         </div>
       </section>
