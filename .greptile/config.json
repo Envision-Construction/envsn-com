@@ -1,0 +1,79 @@
+{
+  "strictness": 2,
+  "commentTypes": ["logic", "syntax"],
+  "autoReview": ["open"],
+  "statusCheck": true,
+  "fixWithAI": true,
+  "includeBranches": ["main"],
+  "excludeAuthors": ["*[bot]"],
+  "disabledLabels": ["no-greptile"],
+  "ignorePatterns": "**/*.lock\n**/pnpm-lock.yaml\n**/package-lock.json\n**/uv.lock\n**/__pycache__/**\n**/*.log\n**/.DS_Store\n**/*.png\n**/*.jpg\n**/*.svg\n**/*.mp4\n.planning/**\npublic/uploads/**\npublic/videos/**\nsrc/app/favicon.ico",
+  "summarySection": { "included": true, "collapsible": true, "defaultOpen": true },
+  "confidenceScoreSection": { "included": true },
+  "sequenceDiagramSection": { "included": false },
+  "context": { "repos": [] },
+  "instructions": "envsn-com is the public marketing site for Envision Construction: a Next.js App Router app with an embedded Sanity Studio and a Turnstile-protected contact form that sends mail through Resend. Its constitution is AGENTS.md, listed in files.json. Portfolio-wide rules arrive from the organization layer as [envision-*] records and are not restated here; this folder holds only rules local to envsn-com.",
+  "rules": [
+    {
+      "id": "envsn-com-contact-schema-gate",
+      "severity": "high",
+      "scope": ["src/app/actions/contact.ts"],
+      "rule": "A violating diff reads a submitted field in submitContact without declaring it in ContactSchema, sends mail before verifyTurnstile succeeds, accepts a non-empty website honeypot, or lets the action throw or return provider error text instead of a ContactState carrying a generic message. Defined in `src/app/actions/contact.ts`."
+    },
+    {
+      "id": "envsn-com-contact-html-escape",
+      "severity": "high",
+      "scope": ["src/app/actions/contact.ts"],
+      "rule": "A violating diff interpolates a submitted value (name, email, phone, company, message or source) into the markup built by renderInquiryHtml or detailRow without passing it through escapeHtml. Defined in `src/app/actions/contact.ts`."
+    },
+    {
+      "id": "envsn-com-contact-subject-line-breaks",
+      "severity": "medium",
+      "scope": ["src/app/actions/contact.ts"],
+      "rule": "A violating diff builds or edits the mail subject from firstName, lastName, company or source without first removing carriage returns and line feeds, which ContactSchema does not reject and trim only strips at the ends. Defined in `src/app/actions/contact.ts`."
+    },
+    {
+      "id": "envsn-com-contact-recipients-from-env",
+      "severity": "high",
+      "scope": ["src/app/actions/contact.ts"],
+      "rule": "A violating diff takes the to or from address from form input, or looks up a LEADS_EMAIL_TO_ or LEADS_EMAIL_FROM_ override with a source value that was not uppercased and stripped of non-alphanumerics; only replyTo may carry the submitter's address. Defined in `src/app/actions/contact.ts`."
+    },
+    {
+      "id": "envsn-com-turnstile-widget-lifecycle",
+      "severity": "medium",
+      "scope": ["src/components/ContactForm.tsx"],
+      "rule": "A violating diff swaps the explicit window.turnstile.render call for class-based auto-render, drops the turnstile.remove cleanup on unmount, stops calling turnstile.reset after a submission result, or renames the cf-turnstile-response field that submitContact reads. Defined in `src/components/ContactForm.tsx`."
+    },
+    {
+      "id": "envsn-com-server-secrets-stay-server",
+      "severity": "high",
+      "scope": ["src/**", "sanity.config.ts", "next.config.ts"],
+      "rule": "A violating diff exposes RESEND_API_KEY, TURNSTILE_SECRET_KEY or a Sanity API token to the browser, either by giving it a NEXT_PUBLIC_ name (Next.js inlines those into client bundles) or by reading it in a module marked 'use client'. Defined in `src/app/actions/contact.ts`."
+    },
+    {
+      "id": "envsn-com-sanity-singletons",
+      "severity": "high",
+      "scope": ["sanity.config.ts", "src/sanity/**"],
+      "rule": "A violating diff lists siteSettings, homePage or preConstructionPage through S.documentTypeListItem, removes the fixed documentId that pins each one in the Studio structure, queries one of them as a list instead of taking [0], or adds a new singleton type without both a fixed documentId and a [0] query. Defined in `sanity.config.ts` and `src/sanity/queries.ts`."
+    },
+    {
+      "id": "envsn-com-sanity-schema-query-contract",
+      "severity": "medium",
+      "scope": ["src/sanity/**"],
+      "rule": "A violating diff renames or removes a schema field, or adds a document type, without the matching change to the GROQ projection that reads it, the schemaTypes list and the page type that consumes it; GROQ returns null for a field that no longer exists, so the page silently shows its fallback. Defined in `src/sanity/queries.ts` and `src/sanity/schemas/index.ts`."
+    },
+    {
+      "id": "envsn-com-sanity-public-read-client",
+      "severity": "high",
+      "scope": ["src/sanity/**"],
+      "rule": "A violating diff adds a token or a drafts perspective to the shared read client, which public pages and the footer import; draft or preview reads need a separate server-only client. Defined in `src/sanity/client.ts`."
+    },
+    {
+      "id": "envsn-com-security-headers",
+      "severity": "medium",
+      "scope": ["next.config.ts"],
+      "rule": "A violating diff removes Strict-Transport-Security, X-Frame-Options DENY, X-Content-Type-Options nosniff, Referrer-Policy or Permissions-Policy from securityHeaders, or narrows the /:path* source so a route such as the Studio loses them. Defined in `next.config.ts`."
+    }
+  ],
+  "disabledRules": []
+}
