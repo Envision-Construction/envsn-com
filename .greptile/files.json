@@ -1,0 +1,34 @@
+{
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "description": "Consult when a change touches any file: defines the agent caveat for this Next.js release and the portfolio rules that apply inside this repository.",
+      "scope": ["**/*"]
+    },
+    {
+      "path": "src/app/actions/contact.ts",
+      "description": "Consult when a change touches the contact form or a page that renders it: defines the submission schema, honeypot, Turnstile verification, recipient routing and inquiry email rendering.",
+      "scope": ["src/components/ContactForm.tsx", "src/app/(site)/**"]
+    },
+    {
+      "path": "src/components/ContactForm.tsx",
+      "description": "Consult when a change touches the contact server action: defines the field names, hidden honeypot, source input and Turnstile widget that the action depends on.",
+      "scope": ["src/app/actions/**"]
+    },
+    {
+      "path": "sanity.config.ts",
+      "description": "Consult when a change touches Sanity schemas or the Studio route: defines the Studio base path and the fixed document ids that make the three singletons.",
+      "scope": ["src/sanity/**", "src/app/studio/**"]
+    },
+    {
+      "path": "src/sanity/queries.ts",
+      "description": "Consult when a change touches CMS content on a page or a schema field: defines the GROQ projections the home page, pre-construction page and footer read.",
+      "scope": ["src/sanity/schemas/**", "src/app/(site)/**", "src/components/Footer.tsx"]
+    },
+    {
+      "path": "next.config.ts",
+      "description": "Consult when a change touches the Turnstile widget, the Studio or third-party scripts: defines the site-wide security headers and records why Content-Security-Policy is off.",
+      "scope": ["src/components/ContactForm.tsx", "src/app/studio/**", "src/app/layout.tsx"]
+    }
+  ]
+}
